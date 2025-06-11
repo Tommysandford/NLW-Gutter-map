@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BS2 Interactive Map</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    #appContainer {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    #sidebar {
+      width: 100%;
+      background: #f4f4f4;
+      padding: 15px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    #map {
+      flex: 1;
+      background: #ddd;
+    }
+
+    select, input, button {
+      font-size: 16px;
+      padding: 8px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .btn-toggle.active {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    @media (min-width: 768px) {
+      #appContainer {
+        flex-direction: row;
+      }
+
+      #sidebar {
+        width: 260px;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="appContainer">
+    <div id="sidebar">
+      <select id="floorSelector">
+        <option value="Main.jpg">Main Building</option>
+        <option value="Outstores and Tech.jpg">Outstores and Tech</option>
+        <option value="TLB.jpg">TLB</option>
+      </select>
+
+      <input type="text" id="searchBox" placeholder="Search marker..." />
+      <button id="searchBtn">🔍 Search</button>
+
+      <button id="addMarkerBtn" class="btn-toggle">+ Add Marker</button>
+      <button id="deleteMarkerBtn" class="btn-toggle">🗑️ Delete Marker</button>
+      <button id="moveMarkerBtn" class="btn-toggle">🔄 Move Marker</button>
+    </div>
+
+    <div id="map"></div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAKyWgteNdM4oNpRvLEYJb8FWegas1Lx8",
+      authDomain: "nlw-gutter-app.firebaseapp.com",
+      databaseURL: "https://nlw-gutter-app.firebaseio.com",
+      projectId: "nlw-gutter-app",
+      storageBucket: "nlw-gutter-app.appspot.com",
+      messagingSenderId: "457588970392",
+      appId: "1:457588970392:web:7704fa21ac846d21a11ed"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const bounds = [[0, 0], [1000, 1500]];
+    const map = L.map('map', {
+      crs: L.CRS.Simple,
+      minZoom: 0,
+      maxZoom: 2,
+      maxBounds: bounds,
+      maxBoundsViscosity: 1.0
+    });
+    map.fitBounds(bounds);
+
+    let currentOverlay;
+    let floorName = 'Main Building';
+
+    const floorBounds = {
+      "Main Building": [[0, 0], [1000, 1500]],
+      "Outstores and Tech": [[0, 0], [1000, 1500]],
+      "TLB": [[0, 0], [1000, 1500]]
+    };
+
+    const allMarkers = {};
+
+    function getCategoryIcon() {
+      return L.icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
+        shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+      });
+    }
+
+    function loadMarkers(floor) {
+      map.eachLayer(layer => {
+        if (layer instanceof L.Marker) map.removeLayer(layer);
+      });
+
+      if (!Array.isArray(allMarkers[floor])) {
+        allMarkers[floor] = [];
+      }
+
+      const floorRef = db.ref(`bs2_markers/${floor}`);
+      floorRef.off();
+
+      floorRef.on('child_added', snapshot => {
+        const data = snapshot.val();
+        const key = snapshot.key;
+
+        if (typeof data.lat !== "number" || typeof data.lng !== "number" || typeof data.note !== "string") return;
+
+        const icon = getCategoryIcon();
+        const marker = L.marker([data.lat, data.lng], { icon })
+          .bindPopup(`<b>${data.note}</b>`);
+
+        allMarkers[floor].push({ key, marker, note: data.note });
+        marker.addTo(map);
+
+        marker.on('click', () => {
+          if (deleteMode && confirm("Delete this marker?")) {
+            db.ref(`bs2_markers/${floor}/${key}`).remove();
+          }
+        });
+      });
+
+      floorRef.on('child_removed', snapshot => {
+        const key = snapshot.key;
+        const markerEntry = allMarkers[floor].find(m => m.key === key);
+        if (markerEntry) {
+          map.removeLayer(markerEntry.marker);
+          allMarkers[floor] = allMarkers[floor].filter(m => m.key !== key);
+        }
+      });
+    }
+
+    function loadFloor(imagePath, label) {
+      console.log("Loading image:", imagePath);
+
+      if (currentOverlay) map.removeLayer(currentOverlay);
+      const bounds = floorBounds[label] || [[0, 0], [1000, 1500]];
+      currentOverlay = L.imageOverlay(imagePath, bounds).addTo(map);
+      map.fitBounds(bounds);
+      floorName = label;
+      loadMarkers(label);
+    }
+
+    const addMarkerBtn = document.getElementById('addMarkerBtn');
+    const deleteMarkerBtn = document.getElementById('deleteMarkerBtn');
+    const moveMarkerBtn = document.getElementById('moveMarkerBtn');
+    const searchBox = document.getElementById('searchBox');
+    const searchBtn = document.getElementById('searchBtn');
+
+    let addingMode = false;
+    let deleteMode = false;
+    let moveMode = false;
+
+    addMarkerBtn.addEventListener('click', () => {
+      addingMode = !addingMode;
+      deleteMode = moveMode = false;
+      addMarkerBtn.classList.toggle('active');
+    });
+
+    deleteMarkerBtn.addEventListener('click', () => {
+      deleteMode = !deleteMode;
+      addingMode = moveMode = false;
+      deleteMarkerBtn.classList.toggle('active');
+    });
+
+    moveMarkerBtn.addEventListener('click', () => {
+      moveMode = !moveMode;
+      addingMode = deleteMode = false;
+      moveMarkerBtn.classList.toggle('active');
+
+      for (const floor in allMarkers) {
+        allMarkers[floor].forEach(({ marker, key }) => {
+          if (!marker.dragging) return;
+          if (moveMode) {
+            marker.dragging.enable();
+            marker.on('dragend', (e) => {
+              const { lat, lng } = e.target.getLatLng();
+              db.ref(`bs2_markers/${floor}/${key}`).update({ lat, lng });
+            });
+          } else {
+            marker.dragging.disable();
+            marker.off('dragend');
+          }
+        });
+      }
+    });
+
+    map.on('click', e => {
+      if (!addingMode) return;
+      const note = prompt("Enter marker note:");
+      if (!note || !note.trim()) return;
+      const newMarker = { lat: e.latlng.lat, lng: e.latlng.lng, note: note.trim() };
+      db.ref(`bs2_markers/${floorName}`).push(newMarker);
+    });
+
+    searchBtn.addEventListener('click', () => {
+      const query = searchBox.value.toLowerCase();
+      if (!query) return;
+
+      for (const floor in allMarkers) {
+        for (const { marker, note } of allMarkers[floor]) {
+          if (note.toLowerCase().includes(query)) {
+            if (floor !== floorName) {
+              floorSelector.value = `${floor}.jpg`;
+              loadFloor(floorSelector.value, floor);
+            }
+            setTimeout(() => {
+              map.setView(marker.getLatLng(), 2);
+              marker.openPopup();
+            }, 500);
+            return;
+          }
+        }
+      }
+      alert("No matching marker found.");
+    });
+
+    const floorSelector = document.getElementById('floorSelector');
+    floorSelector.addEventListener('change', e => {
+      const selected = e.target.value;
+      const label = e.target.options[e.target.selectedIndex].text;
+      loadFloor(selected, label);
+    });
+
+    loadFloor("Main.jpg", "Main Building");
+  </script>
+</body>
+</html>
