@@ -71,6 +71,34 @@
       <button id="addMarkerBtn" class="btn-toggle">+ Add Marker</button>
       <button id="deleteMarkerBtn" class="btn-toggle">🗑️ Delete Marker</button>
       <button id="moveMarkerBtn" class="btn-toggle">🔄 Move Marker</button>
+
+      <select id="filterDropdown">
+        <option value="All">All Categories</option>
+        <option value="Gutter">Gutter</option>
+        <option value="Down Pipe">Down Pipe</option>
+        <option value="Roof Drain">Roof Drain</option>
+        <option value="Manhole">Manhole</option>
+        <option value="Ground Level Channel">Ground Level Channel</option>
+      </select>
+
+      <div id="legend">
+        <strong>Legend</strong><br/>
+        <span style="color:blue;">⬤</span> Gutter<br/>
+        <span style="color:red;">⬤</span> Down Pipe<br/>
+        <span style="color:green;">⬤</span> Roof Drain<br/>
+        <span style="color:orange;">⬤</span> Manhole<br/>
+        <span style="color:violet;">⬤</span> Ground Level Channel
+      </div>
+
+      <!-- Category selector for manual marker addition -->
+      <select id="manualCategorySelector">
+        <option value="">-- Select Marker Category --</option>
+        <option value="Gutter">Gutter</option>
+        <option value="Down Pipe">Down Pipe</option>
+        <option value="Roof Drain">Roof Drain</option>
+        <option value="Manhole">Manhole</option>
+        <option value="Ground Level Channel">Ground Level Channel</option>
+      </select>
     </div>
 
     <div id="map"></div>
@@ -116,9 +144,20 @@
 
     const allMarkers = {};
 
-    function getCategoryIcon() {
+    // 👉 Add this to support colored markers by category
+    const iconMap = {
+      "Gutter": "blue",
+      "Down Pipe": "red",
+      "Roof Drain": "green",
+      "Manhole": "orange",
+      "Ground Level Channel": "violet",
+      "default": "grey"
+    };
+
+    function getCategoryIcon(category) {
+      const color = iconMap[category] || iconMap["default"];
       return L.icon({
-        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
+        iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
         shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
         iconSize: [25, 41],
         iconAnchor: [12, 41],
@@ -145,11 +184,11 @@
 
         if (typeof data.lat !== "number" || typeof data.lng !== "number" || typeof data.note !== "string") return;
 
-        const icon = getCategoryIcon();
-        const marker = L.marker([data.lat, data.lng], { icon })
-          .bindPopup(`<b>${data.note}</b>`);
+        const icon = getCategoryIcon(data.category);
+        const marker = L.marker([data.lat, data.lng], { icon }).addTo(map);
+        marker.bindPopup(data.note);
 
-        allMarkers[floor].push({ key, marker, note: data.note });
+        allMarkers[floor].push({ key, marker, note: data.note, category: data.category });
         marker.addTo(map);
 
         marker.on('click', () => {
@@ -185,6 +224,7 @@
     const moveMarkerBtn = document.getElementById('moveMarkerBtn');
     const searchBox = document.getElementById('searchBox');
     const searchBtn = document.getElementById('searchBtn');
+    const filterDropdown = document.getElementById('filterDropdown');
 
     let addingMode = false;
     let deleteMode = false;
@@ -226,9 +266,33 @@
 
     map.on('click', e => {
       if (!addingMode) return;
-      const note = prompt("Enter marker note:");
-      if (!note || !note.trim()) return;
-      const newMarker = { lat: e.latlng.lat, lng: e.latlng.lng, note: note.trim() };
+
+      // If category isn't passed from the URL, ask the user
+      let userCategory = category;
+      if (!userCategory) {
+        const dropdown = document.getElementById("manualCategorySelector");
+        userCategory = dropdown ? dropdown.value : "";
+        if (!userCategory || !iconMap[userCategory]) {
+          alert("Please select a valid category before placing a marker.");
+          return;
+        }
+      }
+
+      // Auto-fill note if assetId is passed
+      let note = assetId
+        ? `Asset ID: ${assetId} | Category: ${userCategory}`
+        : prompt("Enter marker note:") || "";
+
+      if (!note.trim()) return;
+
+      const newMarker = {
+        lat: e.latlng.lat,
+        lng: e.latlng.lng,
+        note: note.trim(),
+        assetId: assetId || null,
+        category: userCategory
+      };
+
       db.ref(`bs2_markers/${floorName}`).push(newMarker);
     });
 
@@ -254,12 +318,33 @@
       alert("No matching marker found.");
     });
 
+    filterDropdown.addEventListener('change', () => {
+      const selected = filterDropdown.value;
+      for (const floor in allMarkers) {
+        allMarkers[floor].forEach(({ marker, category }) => {
+          if (selected === "All" || category === selected) {
+            marker.addTo(map);
+          } else {
+            map.removeLayer(marker);
+          }
+        });
+      }
+    });
+
     const floorSelector = document.getElementById('floorSelector');
     floorSelector.addEventListener('change', e => {
       const selected = e.target.value;
       const label = e.target.options[e.target.selectedIndex].text;
       loadFloor(selected, label);
     });
+
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    const assetId = getQueryParam('assetId');
+    const category = getQueryParam('category');
 
     loadFloor("Main.jpg", "Main Building");
   </script>
