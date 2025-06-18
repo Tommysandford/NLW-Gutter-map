@@ -69,7 +69,7 @@
       <button id="searchBtn">🔍 Search</button>
 
       <button id="addMarkerBtn" class="btn-toggle">+ Add Marker</button>
-      <button id="deleteMarkerBtn" class="btn-toggle">🗑️ Delete Marker</button>
+      <button id="deleteMarkerBtn" class="btn-toggle">🖑️ Delete Marker</button>
       <button id="moveMarkerBtn" class="btn-toggle">🔄 Move Marker</button>
 
       <select id="filterDropdown">
@@ -90,7 +90,6 @@
         <span style="color:violet;">⬤</span> Ground Level Channel
       </div>
 
-      <!-- Category selector for manual marker addition -->
       <select id="manualCategorySelector">
         <option value="">-- Select Marker Category --</option>
         <option value="Gutter">Gutter</option>
@@ -144,7 +143,6 @@
 
     const allMarkers = {};
 
-    // 👉 Add this to support colored markers by category
     const iconMap = {
       "Gutter": "blue",
       "Down Pipe": "red",
@@ -209,8 +207,6 @@
     }
 
     function loadFloor(imagePath, label) {
-      console.log("Loading image:", imagePath);
-
       if (currentOverlay) map.removeLayer(currentOverlay);
       const bounds = floorBounds[label] || [[0, 0], [1000, 1500]];
       currentOverlay = L.imageOverlay(imagePath, bounds).addTo(map);
@@ -264,10 +260,42 @@
       }
     });
 
+    const floorSelector = document.getElementById('floorSelector');
+    floorSelector.addEventListener('change', e => {
+      const selected = e.target.value;
+      const label = e.target.options[e.target.selectedIndex].text;
+      loadFloor(selected, label);
+    });
+
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    const assetId = getQueryParam('assetId');
+    const category = getQueryParam('category');
+
+    const locationParam = getQueryParam('location');
+    if (locationParam) {
+      const locationData = {
+        "Outstores": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
+        "Main Building": { label: "Main Building", image: "Main.jpg" },
+        "Third Library Building": { label: "TLB", image: "TLB.jpg" }
+      };
+      const matched = locationData[locationParam];
+      if (matched) {
+        floorSelector.value = matched.image;
+        loadFloor(matched.image, matched.label);
+      } else {
+        loadFloor("Main.jpg", "Main Building");
+      }
+    } else {
+      loadFloor("Main.jpg", "Main Building");
+    }
+
     map.on('click', e => {
       if (!addingMode) return;
 
-      // If category isn't passed from the URL, ask the user
       let userCategory = category;
       if (!userCategory) {
         const dropdown = document.getElementById("manualCategorySelector");
@@ -278,7 +306,6 @@
         }
       }
 
-      // Auto-fill note if assetId is passed
       let note = assetId
         ? `Asset ID: ${assetId} | Category: ${userCategory}`
         : prompt("Enter marker note:") || "";
@@ -295,58 +322,6 @@
 
       db.ref(`bs2_markers/${floorName}`).push(newMarker);
     });
-
-    searchBtn.addEventListener('click', () => {
-      const query = searchBox.value.toLowerCase();
-      if (!query) return;
-
-      for (const floor in allMarkers) {
-        for (const { marker, note } of allMarkers[floor]) {
-          if (note.toLowerCase().includes(query)) {
-            if (floor !== floorName) {
-              floorSelector.value = `${floor}.jpg`;
-              loadFloor(floorSelector.value, floor);
-            }
-            setTimeout(() => {
-              map.setView(marker.getLatLng(), 2);
-              marker.openPopup();
-            }, 500);
-            return;
-          }
-        }
-      }
-      alert("No matching marker found.");
-    });
-
-    filterDropdown.addEventListener('change', () => {
-      const selected = filterDropdown.value;
-      for (const floor in allMarkers) {
-        allMarkers[floor].forEach(({ marker, category }) => {
-          if (selected === "All" || category === selected) {
-            marker.addTo(map);
-          } else {
-            map.removeLayer(marker);
-          }
-        });
-      }
-    });
-
-    const floorSelector = document.getElementById('floorSelector');
-    floorSelector.addEventListener('change', e => {
-      const selected = e.target.value;
-      const label = e.target.options[e.target.selectedIndex].text;
-      loadFloor(selected, label);
-    });
-
-    function getQueryParam(param) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(param);
-    }
-
-    const assetId = getQueryParam('assetId');
-    const category = getQueryParam('category');
-
-    loadFloor("Main.jpg", "Main Building");
   </script>
 </body>
 </html>
