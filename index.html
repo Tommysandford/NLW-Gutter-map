@@ -345,6 +345,20 @@
 
     const assetId = getQueryParam('assetId');
     const category = getQueryParam('category');
+    const location = getQueryParam('location');
+
+    const locationToImageMap = {
+      "Main Building": { label: "Main Building", file: "Main.jpg" },
+      "Outstores and Tech": { label: "Outstores and Tech", file: "Outstores and Tech.jpg" },
+      "Third Library Building": { label: "TLB", file: "TLB.jpg" }
+    };
+
+    if (location && locationToImageMap[location]) {
+      const imageData = locationToImageMap[location];
+      const selector = document.getElementById('floorSelector');
+      selector.value = imageData.file;
+      loadFloor(imageData.file, imageData.label);
+    }
 
     loadFloor("Main.jpg", "Main Building");
   </script>
