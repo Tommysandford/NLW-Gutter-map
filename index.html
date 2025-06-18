@@ -9,18 +9,21 @@
       height: 100%;
       margin: 0;
       font-family: Arial, sans-serif;
+      overflow: hidden;
     }
 
     #appContainer {
       display: flex;
       flex-direction: column;
-      height: 100%;
+      height: 100vh;
     }
 
     #sidebar {
       width: 100%;
       background: #f4f4f4;
       padding: 15px;
+      overflow-y: auto;
+      max-height: 50vh;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
       display: flex;
       flex-direction: column;
@@ -29,6 +32,7 @@
 
     #map {
       flex: 1;
+      height: 100%;
       background: #ddd;
     }
 
@@ -59,6 +63,10 @@
 <body>
   <div id="appContainer">
     <div id="sidebar">
+      <button style="background-color: #28a745; color: white; font-weight: bold; border: none; border-radius: 4px; padding: 10px; cursor: pointer;" onclick="window.location.href='https://nlw-gutter-cleaning--38x6.glide.page/dl/e531d2'">
+        ⬅️ Back to Glide App
+      </button>
+
       <select id="floorSelector">
         <option value="Main.jpg">Main Building</option>
         <option value="Outstores and Tech.jpg">Outstores and Tech</option>
@@ -67,9 +75,8 @@
 
       <input type="text" id="searchBox" placeholder="Search marker..." />
       <button id="searchBtn">🔍 Search</button>
-
       <button id="addMarkerBtn" class="btn-toggle">+ Add Marker</button>
-      <button id="deleteMarkerBtn" class="btn-toggle">🖑️ Delete Marker</button>
+      <button id="deleteMarkerBtn" class="btn-toggle">🗑️ Delete Marker</button>
       <button id="moveMarkerBtn" class="btn-toggle">🔄 Move Marker</button>
 
       <select id="filterDropdown">
@@ -98,31 +105,7 @@
         <option value="Manhole">Manhole</option>
         <option value="Ground Level Channel">Ground Level Channel</option>
       </select>
-
-      <div style="margin-top: 16px;">
-        <a href="https://nlw-gutter-cleaning--38x6.glide.page/dl/e531d2"
-           style="
-             display: flex;
-             align-items: center;
-             justify-content: center;
-             width: 180px;
-             height: 40px;
-             background: #28a745;
-             color: white;
-             border-radius: 8px;
-             text-decoration: none;
-             font-size: 16px;
-             font-weight: bold;
-             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-             transition: background 0.2s;
-           "
-           title="Return to Glide"
-        >
-          &#8592;&nbsp;Return to Glide
-        </a>
-      </div>
     </div>
-
     <div id="map"></div>
   </div>
 
@@ -141,19 +124,24 @@
       appId: "1:457588970392:web:79b2f4aa13c846d21a11ed",
       measurementId: "G-GCGYETQQV8"
     };
-
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
     const bounds = [[0, 0], [1000, 1500]];
     const map = L.map('map', {
       crs: L.CRS.Simple,
-      minZoom: 0,
+      minZoom: -1,
       maxZoom: 2,
+      zoomSnap: 0.1,
+      zoomDelta: 0.5,
       maxBounds: bounds,
-      maxBoundsViscosity: 1.0
+      maxBoundsViscosity: 0.3
     });
     map.fitBounds(bounds);
+
+    if (window.innerWidth < 768) {
+      map.setZoom(-0.5);
+    }
 
     let currentOverlay;
     let floorName = 'Main Building';
@@ -165,7 +153,6 @@
     };
 
     const allMarkers = {};
-
     const iconMap = {
       "Gutter": "blue",
       "Down Pipe": "red",
@@ -191,27 +178,18 @@
       map.eachLayer(layer => {
         if (layer instanceof L.Marker) map.removeLayer(layer);
       });
-
-      if (!Array.isArray(allMarkers[floor])) {
-        allMarkers[floor] = [];
-      }
-
+      if (!Array.isArray(allMarkers[floor])) allMarkers[floor] = [];
       const floorRef = db.ref(`bs2_markers/${floor}`);
       floorRef.off();
 
       floorRef.on('child_added', snapshot => {
         const data = snapshot.val();
         const key = snapshot.key;
-
         if (typeof data.lat !== "number" || typeof data.lng !== "number" || typeof data.note !== "string") return;
-
         const icon = getCategoryIcon(data.category);
         const marker = L.marker([data.lat, data.lng], { icon }).addTo(map);
         marker.bindPopup(data.note);
-
         allMarkers[floor].push({ key, marker, note: data.note, category: data.category });
-        marker.addTo(map);
-
         marker.on('click', () => {
           if (deleteMode && confirm("Delete this marker?")) {
             db.ref(`bs2_markers/${floor}/${key}`).remove();
@@ -265,7 +243,6 @@
       moveMode = !moveMode;
       addingMode = deleteMode = false;
       moveMarkerBtn.classList.toggle('active');
-
       for (const floor in allMarkers) {
         allMarkers[floor].forEach(({ marker, key }) => {
           if (!marker.dragging) return;
@@ -318,7 +295,6 @@
 
     map.on('click', e => {
       if (!addingMode) return;
-
       let userCategory = category;
       if (!userCategory) {
         const dropdown = document.getElementById("manualCategorySelector");
@@ -328,13 +304,8 @@
           return;
         }
       }
-
-      let note = assetId
-        ? `Asset ID: ${assetId} | Category: ${userCategory}`
-        : prompt("Enter marker note:") || "";
-
+      let note = assetId ? `Asset ID: ${assetId} | Category: ${userCategory}` : prompt("Enter marker note:") || "";
       if (!note.trim()) return;
-
       const newMarker = {
         lat: e.latlng.lat,
         lng: e.latlng.lng,
@@ -342,7 +313,6 @@
         assetId: assetId || null,
         category: userCategory
       };
-
       db.ref(`bs2_markers/${floorName}`).push(newMarker);
     });
   </script>
