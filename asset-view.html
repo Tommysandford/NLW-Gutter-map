@@ -33,44 +33,6 @@
       z-index: 1;
     }
 
-    /* Asset info overlay */
-    #assetInfo {
-      position: fixed;
-      top: 12px;
-      left: 12px;
-      right: 12px;
-      z-index: 1000;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-      padding: 16px;
-      max-width: 400px;
-      margin: 0 auto;
-    }
-
-    #assetInfo h3 {
-      margin: 0 0 8px 0;
-      font-size: 18px;
-      font-weight: 600;
-      color: #333;
-    }
-
-    #assetInfo p {
-      margin: 4px 0;
-      font-size: 14px;
-      color: #666;
-    }
-
-    .asset-detail {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .asset-detail strong {
-      color: #333;
-    }
-
     /* Back button */
     #backButton {
       position: fixed;
@@ -144,52 +106,6 @@
       border-top: 1px solid #eee;
     }
 
-    /* Legend */
-    #legend {
-      position: fixed;
-      bottom: 20px;
-      right: 12px;
-      z-index: 1000;
-      background: white;
-      padding: 12px;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-      min-width: 160px;
-      max-width: 200px;
-    }
-
-    #legend h3 {
-      margin: 0 0 8px 0;
-      font-size: 13px;
-      font-weight: 600;
-      color: #333;
-      text-align: center;
-      border-bottom: 1px solid #eee;
-      padding-bottom: 6px;
-    }
-
-    .legend-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      padding: 2px 0;
-    }
-
-    .legend-color {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      flex-shrink: 0;
-      border: 1px solid #ddd;
-    }
-
     /* Hide default leaflet controls */
     .leaflet-control-zoom {
       display: none;
@@ -201,12 +117,6 @@
 
     /* Mobile responsive */
     @media (max-width: 428px) {
-      #assetInfo {
-        left: 8px;
-        right: 8px;
-        padding: 12px;
-      }
-
       #backButton {
         top: 8px;
         right: 8px;
@@ -230,14 +140,6 @@
         height: 44px;
         font-size: 18px;
       }
-
-      #legend {
-        bottom: 16px;
-        right: 8px;
-        padding: 10px;
-        min-width: 140px;
-        max-width: 180px;
-      }
     }
 
     /* Pulsing animation for highlighted asset */
@@ -247,7 +149,7 @@
         opacity: 1;
       }
       50% {
-        transform: scale(1.1);
+        transform: scale(1.2);
         opacity: 0.8;
       }
       100% {
@@ -266,23 +168,6 @@
     <!-- Full screen map -->
     <div id="map"></div>
     
-    <!-- Asset info overlay -->
-    <div id="assetInfo">
-      <h3 id="assetTitle">Asset Details</h3>
-      <div class="asset-detail">
-        <span>Asset ID:</span>
-        <strong id="assetIdDisplay">Loading...</strong>
-      </div>
-      <div class="asset-detail">
-        <span>Category:</span>
-        <strong id="categoryDisplay">Loading...</strong>
-      </div>
-      <div class="asset-detail">
-        <span>Building:</span>
-        <strong id="buildingDisplay">Loading...</strong>
-      </div>
-    </div>
-    
     <!-- Back button -->
     <button id="backButton" onclick="window.location.href='https://nlw-gutter-cleaning--38x6.glide.page/dl/e531d2'">
       ← Back to Glide
@@ -297,33 +182,6 @@
     <div id="zoomControls">
       <button class="zoom-btn" id="zoomIn">+</button>
       <button class="zoom-btn" id="zoomOut">−</button>
-    </div>
-    
-    <!-- Legend -->
-    <div id="legend">
-      <h3>Legend</h3>
-      <div class="legend-grid">
-        <div class="legend-item">
-          <div class="legend-color" style="background: blue;"></div>
-          <span>Gutter</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color" style="background: red;"></div>
-          <span>Down Pipe</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color" style="background: green;"></div>
-          <span>Roof Drain</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color" style="background: orange;"></div>
-          <span>Manhole</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color" style="background: violet;"></div>
-          <span>Ground Channel</span>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -386,24 +244,11 @@
       return urlParams.get(param);
     }
 
-    const assetId = getQueryParam('assetId') || getQueryParam('Asset_ID') || getQueryParam('assetid');
+    const assetId = getQueryParam('assetId') || getQueryParam('asset');
     const building = getQueryParam('building') || getQueryParam('Building_Location') || getQueryParam('area');
     const category = getQueryParam('category') || getQueryParam('Asset_Category');
 
-    console.log('Asset Detail View Parameters:', { assetId, building, category });
-
-    // Building to floor mapping
-    const buildingToFloorMapping = {
-      "Main Building": { label: "Main Building", image: "Main.jpg" },
-      "main building": { label: "Main Building", image: "Main.jpg" },
-      "Outstores and Tech": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
-      "outstores and tech": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
-      "Third Library Building": { label: "TLB", image: "TLB.jpg" },
-      "third library building": { label: "TLB", image: "TLB.jpg" },
-      "TLB": { label: "TLB", image: "TLB.jpg" },
-      "tlb": { label: "TLB", image: "TLB.jpg" },
-      "Book Stack 2": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" }
-    };
+    console.log('Asset Detail View Parameters:', { assetId, building, category, fullURL: window.location.href });
 
     function getCategoryIcon(category, isHighlighted = false) {
       const color = iconMap[category] || iconMap["default"];
@@ -425,73 +270,6 @@
       });
     }
 
-    function loadMarkersForFloor(floor) {
-      map.eachLayer(layer => {
-        if (layer instanceof L.Marker) map.removeLayer(layer);
-      });
-
-      const floorRef = db.ref(`bs2_markers/${floor}`);
-      
-      floorRef.once('value', snapshot => {
-        const markers = snapshot.val();
-        if (!markers) return;
-
-        let foundTargetAsset = false;
-
-        Object.entries(markers).forEach(([key, data]) => {
-          if (typeof data.lat !== "number" || typeof data.lng !== "number" || typeof data.note !== "string") return;
-          
-          const isTargetAsset = assetId && (
-            data.assetId === assetId || 
-            data.note.includes(assetId) ||
-            key === assetId
-          );
-
-          const icon = getCategoryIcon(data.category, isTargetAsset);
-          const marker = L.marker([data.lat, data.lng], { icon }).addTo(map);
-          
-          marker.bindPopup(`
-            <div>
-              <strong>${data.note}</strong><br>
-              <em>Category: ${data.category}</em>
-            </div>
-          `);
-
-          if (isTargetAsset) {
-            foundTargetAsset = true;
-            highlightedMarker = marker;
-            
-            // Center map on this asset
-            map.setView([data.lat, data.lng], 1);
-            
-            // Open popup
-            setTimeout(() => {
-              marker.openPopup();
-            }, 500);
-
-            // Add pulsing animation
-            marker.getElement().classList.add('highlighted-marker');
-
-            // Update asset info
-            document.getElementById('assetIdDisplay').textContent = assetId;
-            document.getElementById('categoryDisplay').textContent = data.category;
-            document.getElementById('buildingDisplay').textContent = building || floor;
-          } else {
-            // Make other markers slightly transparent
-            marker.setOpacity(0.6);
-          }
-        });
-
-        if (!foundTargetAsset && assetId) {
-          console.warn('Target asset not found:', assetId);
-          // Still show asset info from URL parameters
-          document.getElementById('assetIdDisplay').textContent = assetId;
-          document.getElementById('categoryDisplay').textContent = category || 'Unknown';
-          document.getElementById('buildingDisplay').textContent = building || 'Unknown';
-        }
-      });
-    }
-
     function loadFloor(imagePath, label) {
       if (currentOverlay) map.removeLayer(currentOverlay);
       const bounds = floorBounds[label] || [[0, 0], [1000, 1500]];
@@ -500,6 +278,7 @@
       
       document.getElementById('currentFloor').textContent = label;
       
+      // Load markers for this floor and find the target asset
       loadMarkersForFloor(label);
       
       setTimeout(() => {
@@ -507,25 +286,138 @@
       }, 100);
     }
 
-    // Determine which floor to load
-    let targetFloor = { label: "Main Building", image: "Main.jpg" }; // Default
+    function loadMarkersForFloor(floor) {
+      // Clear existing markers
+      map.eachLayer(layer => {
+        if (layer instanceof L.Marker) map.removeLayer(layer);
+      });
 
-    if (building && buildingToFloorMapping[building]) {
-      targetFloor = buildingToFloorMapping[building];
-    } else if (assetId) {
-      // Try to determine building from asset ID prefix
-      const prefix = assetId.split(' ')[0] || assetId.split('-')[0];
-      if (prefix === 'TLB') {
-        targetFloor = { label: "TLB", image: "TLB.jpg" };
-      } else if (prefix === 'BS2') {
-        targetFloor = { label: "Main Building", image: "Main.jpg" };
-      }
+      const floorRef = db.ref(`bs2_markers/${floor}`);
+      
+      floorRef.once('value', snapshot => {
+        const markers = snapshot.val();
+        if (!markers) {
+          console.log('No markers found for floor:', floor);
+          return;
+        }
+
+        let foundTargetAsset = false;
+
+        Object.entries(markers).forEach(([key, data]) => {
+          if (typeof data.lat !== "number" || typeof data.lng !== "number" || typeof data.note !== "string") return;
+          
+          // Check if this is our target asset
+          const isTargetAsset = assetId && (
+            data.assetId === assetId || 
+            data.note.includes(assetId) ||
+            key === assetId ||
+            data.note === assetId
+          );
+
+          // Only show the target asset - hide all others
+          if (isTargetAsset) {
+            foundTargetAsset = true;
+            const icon = getCategoryIcon(data.category, true);
+            const marker = L.marker([data.lat, data.lng], { icon }).addTo(map);
+            
+            marker.bindPopup(`
+              <div>
+                <strong>${data.note}</strong><br>
+                <em>Category: ${data.category}</em><br>
+                <em>Floor: ${floor}</em>
+              </div>
+            `);
+
+            highlightedMarker = marker;
+            
+            // Center map on this asset with a good zoom level
+            map.setView([data.lat, data.lng], 1);
+            
+            // Open popup after a brief delay
+            setTimeout(() => {
+              marker.openPopup();
+            }, 500);
+
+            // Add pulsing animation
+            marker.getElement().classList.add('highlighted-marker');
+
+            console.log('✅ Found and highlighted target asset:', assetId, 'on floor:', floor);
+          }
+        });
+
+        if (!foundTargetAsset && assetId) {
+          console.warn('❌ Target asset not found on floor:', floor, 'Asset ID:', assetId);
+        }
+      });
     }
 
-    console.log('Loading floor:', targetFloor);
+    // Function to find asset across all floors (like your other project)
+    async function findFloorByAssetId(assetId) {
+      const floors = ["Main Building", "Outstores and Tech", "TLB"];
+      
+      for (const floor of floors) {
+        try {
+          const snapshot = await db.ref(`bs2_markers/${floor}`).once('value');
+          const markers = snapshot.val();
+          if (!markers) continue;
 
-    // Load the appropriate floor
-    loadFloor(targetFloor.image, targetFloor.label);
+          for (const key in markers) {
+            const marker = markers[key];
+            if (marker.note === assetId || marker.assetId === assetId || key === assetId) {
+              console.log('🎯 Found asset', assetId, 'on floor:', floor);
+              return { floor, image: getImageFromFloor(floor) };
+            }
+          }
+        } catch (error) {
+          console.error('Error searching floor:', floor, error);
+        }
+      }
+      return null;
+    }
+
+    function getImageFromFloor(floorLabel) {
+      const mapping = {
+        "Main Building": "Main.jpg",
+        "Outstores and Tech": "Outstores and Tech.jpg",
+        "TLB": "TLB.jpg"
+      };
+      return mapping[floorLabel] || "Main.jpg";
+    }
+
+    // Building to floor mapping
+    const buildingToFloorMapping = {
+      "Main Building": { label: "Main Building", image: "Main.jpg" },
+      "main building": { label: "Main Building", image: "Main.jpg" },
+      "Outstores and Tech": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
+      "outstores and tech": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
+      "Third Library Building": { label: "TLB", image: "TLB.jpg" },
+      "third library building": { label: "TLB", image: "TLB.jpg" },
+      "TLB": { label: "TLB", image: "TLB.jpg" },
+      "tlb": { label: "TLB", image: "TLB.jpg" }
+    };
+
+    // Initialize the map
+    async function initializeMap() {
+      let targetFloor = { label: "Main Building", image: "Main.jpg" }; // Default
+
+      if (assetId) {
+        console.log('🔍 Searching for asset:', assetId);
+        // Search for the asset across all floors
+        const result = await findFloorByAssetId(assetId);
+        if (result) {
+          targetFloor = { label: result.floor, image: result.image };
+          console.log('✅ Asset found, loading floor:', targetFloor);
+        } else {
+          console.warn('❌ Asset not found, using default floor');
+        }
+      } else if (building && buildingToFloorMapping[building]) {
+        targetFloor = buildingToFloorMapping[building];
+        console.log('🏢 Using building parameter:', building, '→', targetFloor);
+      }
+
+      // Load the floor
+      loadFloor(targetFloor.image, targetFloor.label);
+    }
 
     // Zoom controls
     document.getElementById('zoomIn').addEventListener('click', () => {
@@ -548,6 +440,9 @@
         map.invalidateSize();
       }, 200);
     });
+
+    // Start the application
+    initializeMap();
   </script>
 </body>
 </html>
