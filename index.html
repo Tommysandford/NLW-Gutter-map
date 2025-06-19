@@ -818,50 +818,104 @@
       });
     });
 
-    // URL parameters and automatic floor selection
+    // Enhanced URL parameter handling for Glide integration
     function getQueryParam(param) {
       const urlParams = new URLSearchParams(window.location.search);
       return urlParams.get(param);
     }
 
-    const assetId = getQueryParam('assetId');
-    const category = getQueryParam('category');
-    const area = getQueryParam('area');
+    // Get URL parameters with multiple possible names
+    const assetId = getQueryParam('assetId') || getQueryParam('Asset_ID') || getQueryParam('assetid');
+    const category = getQueryParam('category') || getQueryParam('Asset_Category') || getQueryParam('Asset_category');
+    const area = getQueryParam('area') || getQueryParam('location') || getQueryParam('Location') || getQueryParam('Building_Location') || getQueryParam('Building Location');
 
-    // Automatic floor selection based on area parameter
-    let initialFloor = { label: "Main Building", image: "Main.jpg" };
-    
-    if (area) {
-      const areaToFloorMapping = {
-        "Main Building": { label: "Main Building", image: "Main.jpg" },
-        "Outstores": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
-        "Outstores and Tech": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
-        "Third Library Building": { label: "TLB", image: "TLB.jpg" },
-        "TLB": { label: "TLB", image: "TLB.jpg" }
-      };
+    // Debug logging
+    console.log('URL Parameters:', {
+      assetId: assetId,
+      category: category,
+      area: area,
+      fullURL: window.location.href,
+      allParams: Object.fromEntries(new URLSearchParams(window.location.search))
+    });
+
+    // Updated area to floor mapping based on your current form options
+    const areaToFloorMapping = {
+      // Main Building variations
+      "Main Building": { label: "Main Building", image: "Main.jpg" },
+      "main building": { label: "Main Building", image: "Main.jpg" },
+      "Main_Building": { label: "Main Building", image: "Main.jpg" },
+      "MainBuilding": { label: "Main Building", image: "Main.jpg" },
+      "Main": { label: "Main Building", image: "Main.jpg" },
+      "main": { label: "Main Building", image: "Main.jpg" },
+      "BS2": { label: "Main Building", image: "Main.jpg" },
+      "bs2": { label: "Main Building", image: "Main.jpg" },
       
-      if (areaToFloorMapping[area]) {
-        initialFloor = areaToFloorMapping[area];
-      }
-    }
+      // Outstores and Tech variations
+      "Outstores and Tech": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
+      "outstores and tech": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
+      "Outstores_and_Tech": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
+      "OutstoresandTech": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
+      "Outstores & Tech": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
+      "Outstores": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
+      "outstores": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
+      "Tech": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
+      "tech": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
+      
+      // Third Library Building → TLB
+      "Third Library Building": { label: "TLB", image: "TLB.jpg" },
+      "third library building": { label: "TLB", image: "TLB.jpg" },
+      "Third_Library_Building": { label: "TLB", image: "TLB.jpg" },
+      "ThirdLibraryBuilding": { label: "TLB", image: "TLB.jpg" },
+      "TLB": { label: "TLB", image: "TLB.jpg" },
+      "tlb": { label: "TLB", image: "TLB.jpg" },
+      "Library": { label: "TLB", image: "TLB.jpg" },
+      "library": { label: "TLB", image: "TLB.jpg" }
+    };
 
-    // Legacy location parameter support
-    const locationParam = getQueryParam('location');
-    if (locationParam && !area) {
-      const locationData = {
-        "Outstores": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
-        "Main Building": { label: "Main Building", image: "Main.jpg" },
-        "Third Library Building": { label: "TLB", image: "TLB.jpg" }
-      };
-      const matched = locationData[locationParam];
-      if (matched) {
-        initialFloor = matched;
-      }
+    // Determine initial floor
+    let initialFloor = { label: "Main Building", image: "Main.jpg" }; // Default
+    
+    if (area && areaToFloorMapping[area]) {
+      initialFloor = areaToFloorMapping[area];
+      console.log('✅ Floor selected based on area:', area, '→', initialFloor);
+    } else if (area) {
+      console.warn('❌ Unknown area parameter:', area, 'Available options:', Object.keys(areaToFloorMapping));
+      console.log('🔄 Using default floor');
+    } else {
+      console.log('ℹ️ No area parameter found, using default floor');
     }
 
     // Set the floor selector and load the appropriate floor
     floorSelector.value = initialFloor.image;
     loadFloor(initialFloor.image, initialFloor.label);
+
+    // Show asset info if available
+    if (assetId || category) {
+      console.log('📋 Asset info available:', { assetId, category });
+      // Pre-select category if provided
+      if (category) {
+        const categorySelector = document.getElementById('manualCategorySelector');
+        if (categorySelector) {
+          // Handle category variations
+          const categoryMap = {
+            "Roof Drain": "Roof Drain",
+            "roof drain": "Roof Drain",
+            "Gutter": "Gutter", 
+            "gutter": "Gutter",
+            "Down Pipe": "Down Pipe",
+            "down pipe": "Down Pipe",
+            "Ground Level Channel": "Ground Level Channel",
+            "ground level channel": "Ground Level Channel",
+            "Manhole": "Manhole",
+            "manhole": "Manhole"
+          };
+          
+          const mappedCategory = categoryMap[category] || category;
+          categorySelector.value = mappedCategory;
+          console.log('🏷️ Category pre-selected:', category, '→', mappedCategory);
+        }
+      }
+    }
 
     // Map click handler
     map.on('click', e => {
@@ -907,19 +961,6 @@
         map.invalidateSize();
       }, 200);
     });
-
-    if (assetId) {
-      const focusOnAsset = () => {
-        const markers = allMarkers[floorName] || [];
-        const target = markers.find(m => m.key === assetId || (m.note && m.note.includes(assetId)));
-        if (target) {
-          map.setView(target.marker.getLatLng(), 1);
-          target.marker.openPopup();
-        }
-      };
-      // Delay execution until markers are loaded
-      setTimeout(focusOnAsset, 2000);
-    }
   </script>
 </body>
 </html>
