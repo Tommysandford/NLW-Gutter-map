@@ -68,10 +68,11 @@
       font-size: 18px;
     }
 
-    /* Floor selector - positioned like Google Maps layers button */
+    /* Floor selector - positioned below search bar */
     #floorSelector {
       position: fixed;
-      top: 12px;
+      top: 72px;
+      left: 12px;
       right: 12px;
       z-index: 1000;
       background: white;
@@ -81,7 +82,8 @@
       padding: 12px 16px;
       font-size: 14px;
       font-weight: 500;
-      min-width: 140px;
+      max-width: 400px;
+      margin: 0 auto;
       -webkit-appearance: none;
       appearance: none;
       background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
@@ -94,7 +96,7 @@
     /* Back button - top left corner */
     #backButton {
       position: fixed;
-      top: 72px;
+      top: 132px;
       left: 12px;
       z-index: 1000;
       background: #34a853;
@@ -111,14 +113,14 @@
       gap: 8px;
     }
 
-    /* Action buttons - floating at bottom */
+    /* Action buttons - bottom left */
     #actionButtons {
       position: fixed;
       bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
+      left: 12px;
       z-index: 1000;
       display: flex;
+      flex-direction: column;
       gap: 12px;
       background: white;
       padding: 12px;
@@ -262,24 +264,27 @@
       right: 12px;
       z-index: 1000;
       background: white;
-      padding: 16px;
+      padding: 12px;
       border-radius: 12px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-      min-width: 200px;
+      min-width: 160px;
+      max-width: 200px;
     }
 
     #legend h3 {
-      margin: 0 0 12px 0;
-      font-size: 14px;
+      margin: 0 0 8px 0;
+      font-size: 13px;
       font-weight: 600;
-      color: #666;
+      color: #333;
       text-align: center;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 6px;
     }
 
     .legend-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
 
     .legend-item {
@@ -287,13 +292,15 @@
       align-items: center;
       gap: 8px;
       font-size: 12px;
+      padding: 2px 0;
     }
 
     .legend-color {
-      width: 12px;
-      height: 12px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
       flex-shrink: 0;
+      border: 1px solid #ddd;
     }
 
     /* Close buttons */
@@ -336,15 +343,15 @@
       }
 
       #floorSelector {
-        top: 8px;
+        top: 60px;
+        left: 8px;
         right: 8px;
         padding: 10px 12px;
         font-size: 13px;
-        min-width: 120px;
       }
 
       #backButton {
-        top: 60px;
+        top: 112px;
         left: 8px;
         padding: 6px 12px;
         font-size: 13px;
@@ -352,6 +359,7 @@
 
       #actionButtons {
         bottom: 16px;
+        left: 8px;
       }
 
       .action-btn {
@@ -373,12 +381,13 @@
       #legend {
         bottom: 16px;
         right: 8px;
-        padding: 12px;
-        min-width: 180px;
+        padding: 10px;
+        min-width: 140px;
+        max-width: 180px;
       }
 
       #filterPanel.show {
-        top: 60px;
+        top: 120px;
       }
 
       #filterPanel {
@@ -396,11 +405,14 @@
 
       #floorSelector {
         right: 4px;
-        min-width: 100px;
         font-size: 12px;
       }
 
       #backButton {
+        left: 4px;
+      }
+
+      #actionButtons {
         left: 4px;
       }
 
@@ -410,7 +422,8 @@
 
       #legend {
         right: 4px;
-        min-width: 160px;
+        min-width: 130px;
+        max-width: 160px;
       }
     }
 
@@ -436,7 +449,8 @@
       }
 
       #legend {
-        min-width: 220px;
+        min-width: 180px;
+        max-width: 220px;
       }
     }
   </style>
@@ -461,7 +475,7 @@
     
     <!-- Back button -->
     <button id="backButton" onclick="window.location.href='https://nlw-gutter-cleaning--38x6.glide.page/dl/e531d2'">
-      ← Back
+      ← Back to Glide
     </button>
     
     <!-- Action buttons -->
@@ -804,7 +818,7 @@
       });
     });
 
-    // URL parameters
+    // URL parameters and automatic floor selection
     function getQueryParam(param) {
       const urlParams = new URLSearchParams(window.location.search);
       return urlParams.get(param);
@@ -812,9 +826,28 @@
 
     const assetId = getQueryParam('assetId');
     const category = getQueryParam('category');
+    const area = getQueryParam('area');
 
+    // Automatic floor selection based on area parameter
+    let initialFloor = { label: "Main Building", image: "Main.jpg" };
+    
+    if (area) {
+      const areaToFloorMapping = {
+        "Main Building": { label: "Main Building", image: "Main.jpg" },
+        "Outstores": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
+        "Outstores and Tech": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
+        "Third Library Building": { label: "TLB", image: "TLB.jpg" },
+        "TLB": { label: "TLB", image: "TLB.jpg" }
+      };
+      
+      if (areaToFloorMapping[area]) {
+        initialFloor = areaToFloorMapping[area];
+      }
+    }
+
+    // Legacy location parameter support
     const locationParam = getQueryParam('location');
-    if (locationParam) {
+    if (locationParam && !area) {
       const locationData = {
         "Outstores": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
         "Main Building": { label: "Main Building", image: "Main.jpg" },
@@ -822,14 +855,13 @@
       };
       const matched = locationData[locationParam];
       if (matched) {
-        floorSelector.value = matched.image;
-        loadFloor(matched.image, matched.label);
-      } else {
-        loadFloor("Main.jpg", "Main Building");
+        initialFloor = matched;
       }
-    } else {
-      loadFloor("Main.jpg", "Main Building");
     }
+
+    // Set the floor selector and load the appropriate floor
+    floorSelector.value = initialFloor.image;
+    loadFloor(initialFloor.image, initialFloor.label);
 
     // Map click handler
     map.on('click', e => {
