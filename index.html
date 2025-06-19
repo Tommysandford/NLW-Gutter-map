@@ -8,177 +8,391 @@
     html, body {
       height: 100%;
       margin: 0;
-      font-family: Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
       overflow: hidden;
     }
 
     #appContainer {
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      min-height: 500px; /* Ensure minimum height */
-    }
-
-    #sidebar {
-      width: 100%;
-      background: #f4f4f4;
-      padding: 10px; /* Reduced padding for mobile */
-      overflow-y: auto;
-      max-height: 40vh; /* Reduced to give more space to map */
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      display: flex;
-      flex-direction: column;
-      gap: 8px; /* Smaller gap */
-      flex-shrink: 0; /* Prevent sidebar from shrinking */
-    }
-
-    #map {
-      flex: 1;
-      min-height: 300px; /* Minimum map height */
-      background: #ddd;
       position: relative;
+      height: 100vh;
+      width: 100vw;
     }
 
-    /* Mobile-optimized controls */
-    select, input, button {
-      font-size: 16px; /* Prevents zoom on iOS */
-      padding: 12px 8px; /* Larger touch targets */
-      width: 100%;
-      box-sizing: border-box;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      -webkit-appearance: none; /* Better mobile styling */
+    /* Full-screen map like Google Maps */
+    #map {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 1;
     }
 
-    button {
+    /* Floating search bar at top */
+    #searchContainer {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      z-index: 1000;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    #searchBox {
+      flex: 1;
+      border: none;
+      padding: 12px 16px;
+      font-size: 16px;
+      background: transparent;
+      outline: none;
+    }
+
+    #searchBtn {
+      background: transparent;
+      border: none;
+      padding: 12px 16px;
       cursor: pointer;
-      background: #007bff;
+      color: #666;
+      font-size: 18px;
+    }
+
+    /* Bottom sheet for controls (like Google Maps) */
+    #bottomSheet {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-radius: 16px 16px 0 0;
+      box-shadow: 0 -2px 16px rgba(0,0,0,0.1);
+      z-index: 1000;
+      transform: translateY(calc(100% - 60px)); /* Show just the handle */
+      transition: transform 0.3s ease;
+      max-height: 70vh;
+      overflow: hidden;
+    }
+
+    #bottomSheet.expanded {
+      transform: translateY(0);
+    }
+
+    /* Bottom sheet handle */
+    #sheetHandle {
+      width: 40px;
+      height: 4px;
+      background: #ccc;
+      border-radius: 2px;
+      margin: 12px auto 8px;
+      cursor: pointer;
+    }
+
+    #sheetContent {
+      padding: 0 20px 20px;
+      overflow-y: auto;
+      max-height: calc(70vh - 40px);
+    }
+
+    /* Floating action buttons (like Google Maps) */
+    #fabContainer {
+      position: absolute;
+      right: 16px;
+      bottom: 100px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .fab {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: white;
+      border: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .fab:active {
+      transform: scale(0.95);
+    }
+
+    .fab.active {
+      background: #dc3545;
+      color: white;
+    }
+
+    /* Floor selector floating button */
+    #floorSelector {
+      position: absolute;
+      top: 70px;
+      left: 10px;
+      right: 10px;
+      z-index: 1000;
+      background: white;
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      padding: 12px 16px;
+      font-size: 16px;
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 20px;
+      padding-right: 40px;
+    }
+
+    /* Back button */
+    #backButton {
+      position: absolute;
+      top: 130px;
+      left: 10px;
+      z-index: 1000;
+      background: #28a745;
       color: white;
       border: none;
-      min-height: 44px; /* Apple's recommended touch target */
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      cursor: pointer;
     }
 
-    button:active {
-      background: #0056b3;
+    /* Bottom sheet content styling */
+    .control-group {
+      margin-bottom: 20px;
     }
 
-    .btn-toggle.active {
-      background-color: #dc3545 !important;
-      color: white;
+    .control-group h3 {
+      margin: 0 0 12px 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    select, button.sheet-button {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      background: white;
+      margin-bottom: 8px;
+    }
+
+    button.sheet-button {
+      background: #f8f9fa;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: 500;
+    }
+
+    button.sheet-button:active {
+      background: #e9ecef;
     }
 
     #legend {
-      font-size: 14px;
-      line-height: 1.4;
+      background: #f8f9fa;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
     }
 
-    /* Compact layout for mobile */
+    #legend h3 {
+      margin: 0 0 12px 0;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    /* Hide default leaflet controls and replace */
+    .leaflet-control-zoom {
+      display: none;
+    }
+
+    /* Custom zoom controls */
+    #zoomControls {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      overflow: hidden;
+    }
+
+    .zoom-btn {
+      width: 44px;
+      height: 44px;
+      border: none;
+      background: white;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+    }
+
+    .zoom-btn:active {
+      background: #f5f5f5;
+    }
+
+    .zoom-btn + .zoom-btn {
+      border-top: 1px solid #eee;
+    }
+
+    /* Animation for sheet expansion */
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    /* Mobile optimizations */
     @media (max-width: 767px) {
-      #sidebar {
-        padding: 8px;
-        gap: 6px;
-        max-height: 35vh; /* Even more compact on small screens */
+      #searchContainer {
+        top: 8px;
+        left: 8px;
+        right: 8px;
       }
       
-      select, input, button {
-        font-size: 16px;
-        padding: 10px 6px;
+      #floorSelector {
+        top: 60px;
+        left: 8px;
+        right: 8px;
       }
       
-      #legend {
-        font-size: 13px;
+      #backButton {
+        top: 110px;
+        left: 8px;
       }
-      
-      /* Hide less essential elements on very small screens */
-      #legend br {
-        display: none;
-      }
-      
-      #legend {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        align-items: center;
-      }
-    }
-
-    /* Desktop layout */
-    @media (min-width: 768px) {
-      #appContainer {
-        flex-direction: row;
-      }
-
-      #sidebar {
-        width: 260px;
-        max-height: 100vh;
-        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-        padding: 15px;
-        gap: 10px;
-      }
-    }
-
-    /* Ensure map controls are touch-friendly */
-    .leaflet-control-zoom a {
-      width: 36px !important;
-      height: 36px !important;
-      line-height: 36px !important;
-      font-size: 18px !important;
-    }
-
-    /* Better popup styling on mobile */
-    .leaflet-popup-content {
-      margin: 8px 12px;
-      font-size: 14px;
     }
   </style>
 </head>
 <body>
   <div id="appContainer">
-    <div id="sidebar">
-      <button style="background-color: #28a745; color: white; font-weight: bold; border: none; border-radius: 4px; padding: 10px; cursor: pointer;" onclick="window.location.href='https://nlw-gutter-cleaning--38x6.glide.page/dl/e531d2'">
-        ⬅️ Back to Glide App
-      </button>
-
-      <select id="floorSelector">
-        <option value="Main.jpg">Main Building</option>
-        <option value="Outstores and Tech.jpg">Outstores and Tech</option>
-        <option value="TLB.jpg">TLB</option>
-      </select>
-
-      <input type="text" id="searchBox" placeholder="Search marker..." />
-      <button id="searchBtn">🔍 Search</button>
-      <button id="addMarkerBtn" class="btn-toggle">+ Add Marker</button>
-      <button id="deleteMarkerBtn" class="btn-toggle">🗑️ Delete Marker</button>
-      <button id="moveMarkerBtn" class="btn-toggle">🔄 Move Marker</button>
-
-      <select id="filterDropdown">
-        <option value="All">All Categories</option>
-        <option value="Gutter">Gutter</option>
-        <option value="Down Pipe">Down Pipe</option>
-        <option value="Roof Drain">Roof Drain</option>
-        <option value="Manhole">Manhole</option>
-        <option value="Ground Level Channel">Ground Level Channel</option>
-      </select>
-
-      <div id="legend">
-        <strong>Legend:</strong>
-        <span style="color:blue;">⬤ Gutter</span>
-        <span style="color:red;">⬤ Down Pipe</span>
-        <span style="color:green;">⬤ Roof Drain</span>
-        <span style="color:orange;">⬤ Manhole</span>
-        <span style="color:violet;">⬤ Ground Level Channel</span>
-      </div>
-
-      <select id="manualCategorySelector">
-        <option value="">-- Select Category --</option>
-        <option value="Gutter">Gutter</option>
-        <option value="Down Pipe">Down Pipe</option>
-        <option value="Roof Drain">Roof Drain</option>
-        <option value="Manhole">Manhole</option>
-        <option value="Ground Level Channel">Ground Level Channel</option>
-      </select>
-    </div>
+    <!-- Full screen map -->
     <div id="map"></div>
+    
+    <!-- Floating search bar -->
+    <div id="searchContainer">
+      <input type="text" id="searchBox" placeholder="Search markers...">
+      <button id="searchBtn">🔍</button>
+    </div>
+    
+    <!-- Floor selector -->
+    <select id="floorSelector">
+      <option value="Main.jpg">Main Building</option>
+      <option value="Outstores and Tech.jpg">Outstores and Tech</option>
+      <option value="TLB.jpg">TLB</option>
+    </select>
+    
+    <!-- Back button -->
+    <button id="backButton" onclick="window.location.href='https://nlw-gutter-cleaning--38x6.glide.page/dl/e531d2'">
+      ⬅️ Back to App
+    </button>
+    
+    <!-- Custom zoom controls -->
+    <div id="zoomControls">
+      <button class="zoom-btn" id="zoomIn">+</button>
+      <button class="zoom-btn" id="zoomOut">−</button>
+    </div>
+    
+    <!-- Floating action buttons -->
+    <div id="fabContainer">
+      <button class="fab" id="addMarkerBtn" title="Add Marker">+</button>
+      <button class="fab" id="deleteMarkerBtn" title="Delete Marker">🗑️</button>
+      <button class="fab" id="moveMarkerBtn" title="Move Marker">🔄</button>
+    </div>
+    
+    <!-- Bottom sheet for controls -->
+    <div id="bottomSheet">
+      <div id="sheetHandle"></div>
+      <div id="sheetContent">
+        <div class="control-group">
+          <h3>Filter</h3>
+          <select id="filterDropdown">
+            <option value="All">All Categories</option>
+            <option value="Gutter">Gutter</option>
+            <option value="Down Pipe">Down Pipe</option>
+            <option value="Roof Drain">Roof Drain</option>
+            <option value="Manhole">Manhole</option>
+            <option value="Ground Level Channel">Ground Level Channel</option>
+          </select>
+        </div>
+        
+        <div class="control-group">
+          <h3>Add New Marker</h3>
+          <select id="manualCategorySelector">
+            <option value="">-- Select Category --</option>
+            <option value="Gutter">Gutter</option>
+            <option value="Down Pipe">Down Pipe</option>
+            <option value="Roof Drain">Roof Drain</option>
+            <option value="Manhole">Manhole</option>
+            <option value="Ground Level Channel">Ground Level Channel</option>
+          </select>
+        </div>
+        
+        <div id="legend">
+          <h3>Legend</h3>
+          <div class="legend-item">
+            <div class="legend-color" style="background: blue;"></div>
+            <span>Gutter</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background: red;"></div>
+            <span>Down Pipe</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background: green;"></div>
+            <span>Roof Drain</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background: orange;"></div>
+            <span>Manhole</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background: violet;"></div>
+            <span>Ground Level Channel</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -202,22 +416,22 @@
     const bounds = [[0, 0], [1000, 1500]];
     const map = L.map('map', {
       crs: L.CRS.Simple,
-      minZoom: -2, // Allow more zoom out on mobile
-      maxZoom: 3,  // Allow more zoom in
+      minZoom: -2,
+      maxZoom: 3,
       zoomSnap: 0.1,
       zoomDelta: 0.5,
       maxBounds: bounds,
       maxBoundsViscosity: 0.3,
-      tap: true, // Enable tap events
-      tapTolerance: 15, // Larger tap tolerance for mobile
+      tap: true,
+      tapTolerance: 15,
       touchZoom: true,
-      doubleClickZoom: true
+      doubleClickZoom: true,
+      zoomControl: false // Disable default zoom controls
     });
     map.fitBounds(bounds);
 
-    // Better mobile zoom settings
     if (window.innerWidth < 768) {
-      map.setZoom(-1.5); // Better starting zoom for mobile
+      map.setZoom(-1.5);
     }
 
     let currentOverlay;
@@ -241,7 +455,6 @@
 
     function getCategoryIcon(category) {
       const color = iconMap[category] || iconMap["default"];
-      // Larger icons for mobile
       const isMobile = window.innerWidth < 768;
       const iconSize = isMobile ? [30, 49] : [25, 41];
       const iconAnchor = isMobile ? [15, 49] : [12, 41];
@@ -297,12 +510,53 @@
       floorName = label;
       loadMarkers(label);
       
-      // Force map resize after image loads (important for embedded contexts)
       setTimeout(() => {
         map.invalidateSize();
       }, 100);
     }
 
+    // Bottom sheet functionality
+    const bottomSheet = document.getElementById('bottomSheet');
+    const sheetHandle = document.getElementById('sheetHandle');
+    let isExpanded = false;
+
+    function toggleBottomSheet() {
+      isExpanded = !isExpanded;
+      bottomSheet.classList.toggle('expanded', isExpanded);
+    }
+
+    sheetHandle.addEventListener('click', toggleBottomSheet);
+
+    // Touch gestures for bottom sheet
+    let startY = 0;
+    let currentY = 0;
+
+    sheetHandle.addEventListener('touchstart', (e) => {
+      startY = e.touches[0].clientY;
+    });
+
+    sheetHandle.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      currentY = e.touches[0].clientY;
+      const deltaY = currentY - startY;
+      
+      if (deltaY > 50 && isExpanded) {
+        toggleBottomSheet();
+      } else if (deltaY < -50 && !isExpanded) {
+        toggleBottomSheet();
+      }
+    });
+
+    // Custom zoom controls
+    document.getElementById('zoomIn').addEventListener('click', () => {
+      map.zoomIn();
+    });
+
+    document.getElementById('zoomOut').addEventListener('click', () => {
+      map.zoomOut();
+    });
+
+    // Mode controls
     const addMarkerBtn = document.getElementById('addMarkerBtn');
     const deleteMarkerBtn = document.getElementById('deleteMarkerBtn');
     const moveMarkerBtn = document.getElementById('moveMarkerBtn');
@@ -314,7 +568,6 @@
     let deleteMode = false;
     let moveMode = false;
 
-    // Helper function to reset all modes
     function resetAllModes() {
       addingMode = deleteMode = moveMode = false;
       addMarkerBtn.classList.remove('active');
@@ -345,7 +598,6 @@
     moveMarkerBtn.addEventListener('click', () => {
       if (moveMode) {
         resetAllModes();
-        // Disable dragging for all markers
         for (const floor in allMarkers) {
           allMarkers[floor].forEach(({ marker }) => {
             if (marker.dragging) {
@@ -358,7 +610,6 @@
         resetAllModes();
         moveMode = true;
         moveMarkerBtn.classList.add('active');
-        // Enable dragging for current floor markers
         if (allMarkers[floorName]) {
           allMarkers[floorName].forEach(({ marker, key }) => {
             if (marker.dragging) {
@@ -429,14 +680,12 @@
       db.ref(`bs2_markers/${floorName}`).push(newMarker);
     });
 
-    // Force map resize when window resizes (important for responsive embeds)
     window.addEventListener('resize', () => {
       setTimeout(() => {
         map.invalidateSize();
       }, 100);
     });
 
-    // Force initial resize after everything loads
     window.addEventListener('load', () => {
       setTimeout(() => {
         map.invalidateSize();
