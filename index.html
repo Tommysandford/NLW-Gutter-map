@@ -907,6 +907,19 @@
         map.invalidateSize();
       }, 200);
     });
+
+    if (assetId) {
+      const focusOnAsset = () => {
+        const markers = allMarkers[floorName] || [];
+        const target = markers.find(m => m.key === assetId || (m.note && m.note.includes(assetId)));
+        if (target) {
+          map.setView(target.marker.getLatLng(), 1);
+          target.marker.openPopup();
+        }
+      };
+      // Delay execution until markers are loaded
+      setTimeout(focusOnAsset, 2000);
+    }
   </script>
 </body>
 </html>
