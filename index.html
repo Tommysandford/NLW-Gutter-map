@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>BS2 Interactive Map</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
     html, body {
@@ -16,38 +16,93 @@
       display: flex;
       flex-direction: column;
       height: 100vh;
+      min-height: 500px; /* Ensure minimum height */
     }
 
     #sidebar {
       width: 100%;
       background: #f4f4f4;
-      padding: 15px;
+      padding: 10px; /* Reduced padding for mobile */
       overflow-y: auto;
-      max-height: 50vh;
+      max-height: 40vh; /* Reduced to give more space to map */
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px; /* Smaller gap */
+      flex-shrink: 0; /* Prevent sidebar from shrinking */
     }
 
     #map {
       flex: 1;
-      height: 100%;
+      min-height: 300px; /* Minimum map height */
       background: #ddd;
+      position: relative;
     }
 
+    /* Mobile-optimized controls */
     select, input, button {
-      font-size: 16px;
-      padding: 8px;
+      font-size: 16px; /* Prevents zoom on iOS */
+      padding: 12px 8px; /* Larger touch targets */
       width: 100%;
       box-sizing: border-box;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      -webkit-appearance: none; /* Better mobile styling */
+    }
+
+    button {
+      cursor: pointer;
+      background: #007bff;
+      color: white;
+      border: none;
+      min-height: 44px; /* Apple's recommended touch target */
+    }
+
+    button:active {
+      background: #0056b3;
     }
 
     .btn-toggle.active {
-      background-color: #dc3545;
+      background-color: #dc3545 !important;
       color: white;
     }
 
+    #legend {
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    /* Compact layout for mobile */
+    @media (max-width: 767px) {
+      #sidebar {
+        padding: 8px;
+        gap: 6px;
+        max-height: 35vh; /* Even more compact on small screens */
+      }
+      
+      select, input, button {
+        font-size: 16px;
+        padding: 10px 6px;
+      }
+      
+      #legend {
+        font-size: 13px;
+      }
+      
+      /* Hide less essential elements on very small screens */
+      #legend br {
+        display: none;
+      }
+      
+      #legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+      }
+    }
+
+    /* Desktop layout */
     @media (min-width: 768px) {
       #appContainer {
         flex-direction: row;
@@ -55,8 +110,25 @@
 
       #sidebar {
         width: 260px;
+        max-height: 100vh;
         box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        gap: 10px;
       }
+    }
+
+    /* Ensure map controls are touch-friendly */
+    .leaflet-control-zoom a {
+      width: 36px !important;
+      height: 36px !important;
+      line-height: 36px !important;
+      font-size: 18px !important;
+    }
+
+    /* Better popup styling on mobile */
+    .leaflet-popup-content {
+      margin: 8px 12px;
+      font-size: 14px;
     }
   </style>
 </head>
@@ -89,16 +161,16 @@
       </select>
 
       <div id="legend">
-        <strong>Legend</strong><br/>
-        <span style="color:blue;">⬤</span> Gutter<br/>
-        <span style="color:red;">⬤</span> Down Pipe<br/>
-        <span style="color:green;">⬤</span> Roof Drain<br/>
-        <span style="color:orange;">⬤</span> Manhole<br/>
-        <span style="color:violet;">⬤</span> Ground Level Channel
+        <strong>Legend:</strong>
+        <span style="color:blue;">⬤ Gutter</span>
+        <span style="color:red;">⬤ Down Pipe</span>
+        <span style="color:green;">⬤ Roof Drain</span>
+        <span style="color:orange;">⬤ Manhole</span>
+        <span style="color:violet;">⬤ Ground Level Channel</span>
       </div>
 
       <select id="manualCategorySelector">
-        <option value="">-- Select Marker Category --</option>
+        <option value="">-- Select Category --</option>
         <option value="Gutter">Gutter</option>
         <option value="Down Pipe">Down Pipe</option>
         <option value="Roof Drain">Roof Drain</option>
@@ -130,17 +202,22 @@
     const bounds = [[0, 0], [1000, 1500]];
     const map = L.map('map', {
       crs: L.CRS.Simple,
-      minZoom: -1,
-      maxZoom: 2,
+      minZoom: -2, // Allow more zoom out on mobile
+      maxZoom: 3,  // Allow more zoom in
       zoomSnap: 0.1,
       zoomDelta: 0.5,
       maxBounds: bounds,
-      maxBoundsViscosity: 0.3
+      maxBoundsViscosity: 0.3,
+      tap: true, // Enable tap events
+      tapTolerance: 15, // Larger tap tolerance for mobile
+      touchZoom: true,
+      doubleClickZoom: true
     });
     map.fitBounds(bounds);
 
+    // Better mobile zoom settings
     if (window.innerWidth < 768) {
-      map.setZoom(-0.5);
+      map.setZoom(-1.5); // Better starting zoom for mobile
     }
 
     let currentOverlay;
@@ -164,11 +241,16 @@
 
     function getCategoryIcon(category) {
       const color = iconMap[category] || iconMap["default"];
+      // Larger icons for mobile
+      const isMobile = window.innerWidth < 768;
+      const iconSize = isMobile ? [30, 49] : [25, 41];
+      const iconAnchor = isMobile ? [15, 49] : [12, 41];
+      
       return L.icon({
         iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
         shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
+        iconSize: iconSize,
+        iconAnchor: iconAnchor,
         popupAnchor: [1, -34],
         shadowSize: [41, 41]
       });
@@ -214,6 +296,11 @@
       map.fitBounds(bounds);
       floorName = label;
       loadMarkers(label);
+      
+      // Force map resize after image loads (important for embedded contexts)
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 100);
     }
 
     const addMarkerBtn = document.getElementById('addMarkerBtn');
@@ -227,36 +314,62 @@
     let deleteMode = false;
     let moveMode = false;
 
+    // Helper function to reset all modes
+    function resetAllModes() {
+      addingMode = deleteMode = moveMode = false;
+      addMarkerBtn.classList.remove('active');
+      deleteMarkerBtn.classList.remove('active');
+      moveMarkerBtn.classList.remove('active');
+    }
+
     addMarkerBtn.addEventListener('click', () => {
-      addingMode = !addingMode;
-      deleteMode = moveMode = false;
-      addMarkerBtn.classList.toggle('active');
+      if (addingMode) {
+        resetAllModes();
+      } else {
+        resetAllModes();
+        addingMode = true;
+        addMarkerBtn.classList.add('active');
+      }
     });
 
     deleteMarkerBtn.addEventListener('click', () => {
-      deleteMode = !deleteMode;
-      addingMode = moveMode = false;
-      deleteMarkerBtn.classList.toggle('active');
+      if (deleteMode) {
+        resetAllModes();
+      } else {
+        resetAllModes();
+        deleteMode = true;
+        deleteMarkerBtn.classList.add('active');
+      }
     });
 
     moveMarkerBtn.addEventListener('click', () => {
-      moveMode = !moveMode;
-      addingMode = deleteMode = false;
-      moveMarkerBtn.classList.toggle('active');
-      for (const floor in allMarkers) {
-        allMarkers[floor].forEach(({ marker, key }) => {
-          if (!marker.dragging) return;
-          if (moveMode) {
-            marker.dragging.enable();
-            marker.on('dragend', (e) => {
-              const { lat, lng } = e.target.getLatLng();
-              db.ref(`bs2_markers/${floor}/${key}`).update({ lat, lng });
-            });
-          } else {
-            marker.dragging.disable();
-            marker.off('dragend');
-          }
-        });
+      if (moveMode) {
+        resetAllModes();
+        // Disable dragging for all markers
+        for (const floor in allMarkers) {
+          allMarkers[floor].forEach(({ marker }) => {
+            if (marker.dragging) {
+              marker.dragging.disable();
+              marker.off('dragend');
+            }
+          });
+        }
+      } else {
+        resetAllModes();
+        moveMode = true;
+        moveMarkerBtn.classList.add('active');
+        // Enable dragging for current floor markers
+        if (allMarkers[floorName]) {
+          allMarkers[floorName].forEach(({ marker, key }) => {
+            if (marker.dragging) {
+              marker.dragging.enable();
+              marker.on('dragend', (e) => {
+                const { lat, lng } = e.target.getLatLng();
+                db.ref(`bs2_markers/${floorName}/${key}`).update({ lat, lng });
+              });
+            }
+          });
+        }
       }
     });
 
@@ -314,6 +427,20 @@
         category: userCategory
       };
       db.ref(`bs2_markers/${floorName}`).push(newMarker);
+    });
+
+    // Force map resize when window resizes (important for responsive embeds)
+    window.addEventListener('resize', () => {
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 100);
+    });
+
+    // Force initial resize after everything loads
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 200);
     });
   </script>
 </body>
