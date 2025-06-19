@@ -250,8 +250,27 @@
 
     function loadFloor(imagePath, label) {
       if (currentOverlay) map.removeLayer(currentOverlay);
+      
       const bounds = floorBounds[label] || [[0, 0], [1000, 1500]];
-      currentOverlay = L.imageOverlay(imagePath, bounds).addTo(map);
+      
+      console.log('🏢 Loading floor image:', imagePath, 'for location:', label);
+      
+      currentOverlay = L.imageOverlay(imagePath, bounds, {
+        opacity: 1,
+        alt: label
+      }).addTo(map);
+      
+      // Wait for image to load before fitting bounds
+      currentOverlay.on('load', () => {
+        console.log('✅ Floor image loaded successfully');
+        map.fitBounds(bounds);
+      });
+      
+      currentOverlay.on('error', () => {
+        console.error('❌ Failed to load floor image:', imagePath);
+      });
+      
+      // Fit bounds immediately as well
       map.fitBounds(bounds);
       
       document.getElementById('currentLocation').textContent = label;
