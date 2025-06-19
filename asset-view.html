@@ -327,13 +327,21 @@
 
             highlightedMarker = marker;
             
-            // Center map on this asset with a good zoom level
-            map.setView([data.lat, data.lng], 1);
+            // Center map on this asset with proper zoom - wait a bit for image to load
+            setTimeout(() => {
+              map.setView([data.lat, data.lng], 0.5);
+              
+              // If still not visible, try fitting bounds around the marker
+              setTimeout(() => {
+                const markerBounds = L.latLngBounds([data.lat, data.lng], [data.lat, data.lng]);
+                map.fitBounds(markerBounds.pad(0.1));
+              }, 500);
+            }, 300);
             
-            // Open popup after a brief delay
+            // Open popup after centering
             setTimeout(() => {
               marker.openPopup();
-            }, 500);
+            }, 800);
 
             // Add pulsing animation after the element is rendered
             setTimeout(() => {
