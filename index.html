@@ -824,16 +824,26 @@
       return urlParams.get(param);
     }
 
-    // Get URL parameters with multiple possible names
+    // Get URL parameters with multiple possible names and decode them properly
     const assetId = getQueryParam('assetId') || getQueryParam('Asset_ID') || getQueryParam('assetid');
     const category = getQueryParam('category') || getQueryParam('Asset_Category') || getQueryParam('Asset_category');
-    const area = getQueryParam('area') || getQueryParam('location') || getQueryParam('Location') || getQueryParam('Building_Location') || getQueryParam('Building Location');
+    let area = getQueryParam('area') || getQueryParam('location') || getQueryParam('Location') || getQueryParam('Building_Location') || getQueryParam('Building Location');
+
+    // Decode URL encoding if present
+    if (area) {
+      try {
+        area = decodeURIComponent(area);
+      } catch (e) {
+        console.log('Could not decode area parameter:', area);
+      }
+    }
 
     // Debug logging
     console.log('URL Parameters:', {
       assetId: assetId,
       category: category,
       area: area,
+      rawArea: getQueryParam('area'),
       fullURL: window.location.href,
       allParams: Object.fromEntries(new URLSearchParams(window.location.search))
     });
@@ -879,7 +889,8 @@
       initialFloor = areaToFloorMapping[area];
       console.log('✅ Floor selected based on area:', area, '→', initialFloor);
     } else if (area) {
-      console.warn('❌ Unknown area parameter:', area, 'Available options:', Object.keys(areaToFloorMapping));
+      console.warn('❌ Unknown area parameter:', area);
+      console.log('Available options:', Object.keys(areaToFloorMapping));
       console.log('🔄 Using default floor');
     } else {
       console.log('ℹ️ No area parameter found, using default floor');
