@@ -304,13 +304,21 @@
         Object.entries(markers).forEach(([key, data]) => {
           if (typeof data.lat !== "number" || typeof data.lng !== "number" || typeof data.note !== "string") return;
           
-          // Check if this is our target asset
+          // Check if this is our target asset - look in note field primarily
           const isTargetAsset = assetId && (
-            data.assetId === assetId || 
-            data.note.includes(assetId) ||
-            key === assetId ||
-            data.note === assetId
+            data.note === assetId ||                    // Exact match in note
+            data.note.includes(assetId) ||              // Partial match in note  
+            data.assetId === assetId ||                 // Match assetId field if it exists
+            key === assetId                             // Match the Firebase key
           );
+
+          console.log('Checking marker:', {
+            key: key,
+            note: data.note,
+            assetId: data.assetId,
+            searchingFor: assetId,
+            isMatch: isTargetAsset
+          });
 
           // Only show the target asset - hide all others
           if (isTargetAsset) {
