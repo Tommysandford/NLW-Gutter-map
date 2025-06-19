@@ -33,28 +33,10 @@
       z-index: 1;
     }
 
-    /* Back button */
-    #backButton {
-      position: fixed;
-      top: 12px;
-      right: 12px;
-      z-index: 1000;
-      background: #34a853;
-      color: white;
-      border: none;
-      border-radius: 20px;
-      padding: 8px 16px;
-      font-size: 14px;
-      font-weight: 500;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
 
-    /* Floor indicator */
-    #floorIndicator {
+
+    /* Location indicator */
+    #locationIndicator {
       position: fixed;
       bottom: 20px;
       left: 12px;
@@ -124,7 +106,7 @@
         font-size: 13px;
       }
 
-      #floorIndicator {
+      #locationIndicator {
         bottom: 16px;
         left: 8px;
         padding: 10px 12px;
@@ -168,14 +150,10 @@
     <!-- Full screen map -->
     <div id="map"></div>
     
-    <!-- Back button -->
-    <button id="backButton" onclick="window.location.href='https://nlw-gutter-cleaning--38x6.glide.page/dl/e531d2'">
-      ← Back to Glide
-    </button>
     
-    <!-- Floor indicator -->
-    <div id="floorIndicator">
-      Floor: <span id="currentFloor">Loading...</span>
+    <!-- Location indicator -->
+    <div id="locationIndicator">
+      Location: <span id="currentLocation">Loading...</span>
     </div>
     
     <!-- Zoom controls -->
@@ -276,7 +254,7 @@
       currentOverlay = L.imageOverlay(imagePath, bounds).addTo(map);
       map.fitBounds(bounds);
       
-      document.getElementById('currentFloor').textContent = label;
+      document.getElementById('currentLocation').textContent = label;
       
       // Load markers for this floor and find the target asset
       loadMarkersForFloor(label);
@@ -324,7 +302,7 @@
               <div>
                 <strong>${data.note}</strong><br>
                 <em>Category: ${data.category}</em><br>
-                <em>Floor: ${floor}</em>
+                <em>Location: ${floor}</em>
               </div>
             `);
 
@@ -338,15 +316,20 @@
               marker.openPopup();
             }, 500);
 
-            // Add pulsing animation
-            marker.getElement().classList.add('highlighted-marker');
+            // Add pulsing animation after the element is rendered
+            setTimeout(() => {
+              const markerElement = marker.getElement();
+              if (markerElement) {
+                markerElement.classList.add('highlighted-marker');
+              }
+            }, 100);
 
-            console.log('✅ Found and highlighted target asset:', assetId, 'on floor:', floor);
+            console.log('✅ Found and highlighted target asset:', assetId, 'on location:', floor);
           }
         });
 
         if (!foundTargetAsset && assetId) {
-          console.warn('❌ Target asset not found on floor:', floor, 'Asset ID:', assetId);
+          console.warn('❌ Target asset not found on location:', floor, 'Asset ID:', assetId);
         }
       });
     }
@@ -364,7 +347,7 @@
           for (const key in markers) {
             const marker = markers[key];
             if (marker.note === assetId || marker.assetId === assetId || key === assetId) {
-              console.log('🎯 Found asset', assetId, 'on floor:', floor);
+              console.log('🎯 Found asset', assetId, 'on location:', floor);
               return { floor, image: getImageFromFloor(floor) };
             }
           }
