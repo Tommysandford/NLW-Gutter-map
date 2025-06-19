@@ -18,7 +18,7 @@
       width: 100vw;
     }
 
-    /* Full-screen map like Google Maps */
+    /* Full-screen map */
     #map {
       position: absolute;
       top: 0;
@@ -28,27 +28,33 @@
       z-index: 1;
     }
 
-    /* Floating search bar at top */
-    #searchContainer {
+    /* Compact top bar with search and floor selector */
+    #topBar {
       position: absolute;
-      top: 10px;
-      left: 10px;
-      right: 10px;
+      top: 8px;
+      left: 8px;
+      right: 8px;
       z-index: 1000;
+      display: flex;
+      gap: 8px;
+      height: 44px;
+    }
+
+    #searchContainer {
+      flex: 2;
       background: white;
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.15);
       display: flex;
       align-items: center;
-      padding: 0;
       overflow: hidden;
     }
 
     #searchBox {
       flex: 1;
       border: none;
-      padding: 12px 16px;
-      font-size: 16px;
+      padding: 0 12px;
+      font-size: 14px;
       background: transparent;
       outline: none;
     }
@@ -56,191 +62,180 @@
     #searchBtn {
       background: transparent;
       border: none;
-      padding: 12px 16px;
+      padding: 0 12px;
       cursor: pointer;
       color: #666;
-      font-size: 18px;
+      font-size: 16px;
     }
 
-    /* Bottom sheet for controls (like Google Maps) */
-    #bottomSheet {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: white;
-      border-radius: 16px 16px 0 0;
-      box-shadow: 0 -2px 16px rgba(0,0,0,0.1);
-      z-index: 1000;
-      transform: translateY(calc(100% - 60px)); /* Show just the handle */
-      transition: transform 0.3s ease;
-      max-height: 70vh;
-      overflow: hidden;
-    }
-
-    #bottomSheet.expanded {
-      transform: translateY(0);
-    }
-
-    /* Bottom sheet handle */
-    #sheetHandle {
-      width: 40px;
-      height: 4px;
-      background: #ccc;
-      border-radius: 2px;
-      margin: 12px auto 8px;
-      cursor: pointer;
-    }
-
-    #sheetContent {
-      padding: 0 20px 20px;
-      overflow-y: auto;
-      max-height: calc(70vh - 40px);
-    }
-
-    /* Floating action buttons (like Google Maps) */
-    #fabContainer {
-      position: absolute;
-      right: 16px;
-      bottom: 100px;
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .fab {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: white;
-      border: none;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .fab:active {
-      transform: scale(0.95);
-    }
-
-    .fab.active {
-      background: #dc3545;
-      color: white;
-    }
-
-    /* Floor selector floating button */
     #floorSelector {
-      position: absolute;
-      top: 70px;
-      left: 10px;
-      right: 10px;
-      z-index: 1000;
+      flex: 1;
       background: white;
       border: none;
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      padding: 12px 16px;
-      font-size: 16px;
+      padding: 0 12px;
+      font-size: 14px;
       -webkit-appearance: none;
       appearance: none;
       background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
       background-repeat: no-repeat;
-      background-position: right 12px center;
-      background-size: 20px;
-      padding-right: 40px;
+      background-position: right 8px center;
+      background-size: 16px;
+      padding-right: 28px;
     }
 
-    /* Back button */
-    #backButton {
+    /* Compact left sidebar for controls */
+    #leftSidebar {
       position: absolute;
-      top: 130px;
-      left: 10px;
+      left: 8px;
+      top: 60px;
+      bottom: 8px;
+      width: 280px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
       z-index: 1000;
-      background: #28a745;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #sidebarContent {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Control sections */
+    .control-section {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .control-section h3 {
+      margin: 0;
       font-size: 14px;
       font-weight: 600;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      cursor: pointer;
-    }
-
-    /* Bottom sheet content styling */
-    .control-group {
-      margin-bottom: 20px;
-    }
-
-    .control-group h3 {
-      margin: 0 0 12px 0;
-      font-size: 18px;
-      font-weight: 600;
       color: #333;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
-    select, button.sheet-button {
-      width: 100%;
-      padding: 12px 16px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-size: 16px;
-      background: white;
-      margin-bottom: 8px;
-    }
-
-    button.sheet-button {
-      background: #f8f9fa;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    /* Compact buttons */
+    .action-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
       gap: 8px;
+    }
+
+    .action-btn {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background: white;
+      cursor: pointer;
+      font-size: 12px;
+      text-align: center;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .action-btn:hover {
+      background: #f8f9fa;
+    }
+
+    .action-btn.active {
+      background: #dc3545;
+      color: white;
+      border-color: #dc3545;
+    }
+
+    .btn-icon {
+      font-size: 16px;
+    }
+
+    .btn-text {
+      font-size: 10px;
       font-weight: 500;
     }
 
-    button.sheet-button:active {
-      background: #e9ecef;
+    /* Dropdowns */
+    select.compact-select {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      background: white;
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      background-size: 16px;
+      padding-right: 32px;
     }
 
+    /* Compact legend */
     #legend {
       background: #f8f9fa;
-      padding: 16px;
+      padding: 12px;
       border-radius: 8px;
-      margin-bottom: 16px;
     }
 
     #legend h3 {
-      margin: 0 0 12px 0;
-      font-size: 16px;
+      margin: 0 0 8px 0;
+      font-size: 12px;
       font-weight: 600;
+      color: #666;
+    }
+
+    .legend-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
     }
 
     .legend-item {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
-      font-size: 14px;
+      gap: 6px;
+      font-size: 11px;
     }
 
     .legend-color {
-      width: 12px;
-      height: 12px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
+      flex-shrink: 0;
     }
 
-    /* Hide default leaflet controls and replace */
-    .leaflet-control-zoom {
-      display: none;
+    /* Back button */
+    #backButton {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      z-index: 1100;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      cursor: pointer;
     }
 
-    /* Custom zoom controls */
+    /* Zoom controls */
     #zoomControls {
       position: absolute;
       right: 16px;
@@ -256,11 +251,11 @@
     }
 
     .zoom-btn {
-      width: 44px;
-      height: 44px;
+      width: 40px;
+      height: 40px;
       border: none;
       background: white;
-      font-size: 20px;
+      font-size: 18px;
       font-weight: bold;
       cursor: pointer;
       display: flex;
@@ -277,29 +272,48 @@
       border-top: 1px solid #eee;
     }
 
-    /* Animation for sheet expansion */
-    @keyframes slideUp {
-      from { transform: translateY(100%); }
-      to { transform: translateY(0); }
+    /* Hide default leaflet controls */
+    .leaflet-control-zoom {
+      display: none;
     }
 
-    /* Mobile optimizations */
-    @media (max-width: 767px) {
-      #searchContainer {
-        top: 8px;
-        left: 8px;
-        right: 8px;
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      #leftSidebar {
+        width: 260px;
       }
       
-      #floorSelector {
-        top: 60px;
-        left: 8px;
-        right: 8px;
+      #topBar {
+        flex-direction: column;
+        height: auto;
       }
       
-      #backButton {
-        top: 110px;
-        left: 8px;
+      #searchContainer, #floorSelector {
+        height: 40px;
+        flex: none;
+      }
+      
+      #leftSidebar {
+        top: 92px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      #leftSidebar {
+        left: 4px;
+        right: 4px;
+        width: auto;
+        top: 92px;
+        bottom: 4px;
+      }
+      
+      #topBar {
+        left: 4px;
+        right: 4px;
+      }
+      
+      #zoomControls {
+        right: 8px;
       }
     }
   </style>
@@ -309,44 +323,50 @@
     <!-- Full screen map -->
     <div id="map"></div>
     
-    <!-- Floating search bar -->
-    <div id="searchContainer">
-      <input type="text" id="searchBox" placeholder="Search markers...">
-      <button id="searchBtn">🔍</button>
+    <!-- Compact top bar -->
+    <div id="topBar">
+      <div id="searchContainer">
+        <input type="text" id="searchBox" placeholder="Search markers...">
+        <button id="searchBtn">🔍</button>
+      </div>
+      <select id="floorSelector">
+        <option value="Main.jpg">Main Building</option>
+        <option value="Outstores and Tech.jpg">Outstores & Tech</option>
+        <option value="TLB.jpg">TLB</option>
+      </select>
     </div>
-    
-    <!-- Floor selector -->
-    <select id="floorSelector">
-      <option value="Main.jpg">Main Building</option>
-      <option value="Outstores and Tech.jpg">Outstores and Tech</option>
-      <option value="TLB.jpg">TLB</option>
-    </select>
     
     <!-- Back button -->
     <button id="backButton" onclick="window.location.href='https://nlw-gutter-cleaning--38x6.glide.page/dl/e531d2'">
-      ⬅️ Back to App
+      ⬅️ Back
     </button>
     
-    <!-- Custom zoom controls -->
-    <div id="zoomControls">
-      <button class="zoom-btn" id="zoomIn">+</button>
-      <button class="zoom-btn" id="zoomOut">−</button>
-    </div>
-    
-    <!-- Floating action buttons -->
-    <div id="fabContainer">
-      <button class="fab" id="addMarkerBtn" title="Add Marker">+</button>
-      <button class="fab" id="deleteMarkerBtn" title="Delete Marker">🗑️</button>
-      <button class="fab" id="moveMarkerBtn" title="Move Marker">🔄</button>
-    </div>
-    
-    <!-- Bottom sheet for controls -->
-    <div id="bottomSheet">
-      <div id="sheetHandle"></div>
-      <div id="sheetContent">
-        <div class="control-group">
+    <!-- Compact left sidebar -->
+    <div id="leftSidebar">
+      <div id="sidebarContent">
+        <!-- Action buttons -->
+        <div class="control-section">
+          <h3>Actions</h3>
+          <div class="action-buttons">
+            <button class="action-btn" id="addMarkerBtn">
+              <span class="btn-icon">+</span>
+              <span class="btn-text">Add</span>
+            </button>
+            <button class="action-btn" id="deleteMarkerBtn">
+              <span class="btn-icon">🗑️</span>
+              <span class="btn-text">Delete</span>
+            </button>
+            <button class="action-btn" id="moveMarkerBtn">
+              <span class="btn-icon">🔄</span>
+              <span class="btn-text">Move</span>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Filter -->
+        <div class="control-section">
           <h3>Filter</h3>
-          <select id="filterDropdown">
+          <select id="filterDropdown" class="compact-select">
             <option value="All">All Categories</option>
             <option value="Gutter">Gutter</option>
             <option value="Down Pipe">Down Pipe</option>
@@ -356,9 +376,10 @@
           </select>
         </div>
         
-        <div class="control-group">
-          <h3>Add New Marker</h3>
-          <select id="manualCategorySelector">
+        <!-- Add marker category -->
+        <div class="control-section">
+          <h3>New Marker</h3>
+          <select id="manualCategorySelector" class="compact-select">
             <option value="">-- Select Category --</option>
             <option value="Gutter">Gutter</option>
             <option value="Down Pipe">Down Pipe</option>
@@ -368,30 +389,39 @@
           </select>
         </div>
         
+        <!-- Legend -->
         <div id="legend">
           <h3>Legend</h3>
-          <div class="legend-item">
-            <div class="legend-color" style="background: blue;"></div>
-            <span>Gutter</span>
-          </div>
-          <div class="legend-item">
-            <div class="legend-color" style="background: red;"></div>
-            <span>Down Pipe</span>
-          </div>
-          <div class="legend-item">
-            <div class="legend-color" style="background: green;"></div>
-            <span>Roof Drain</span>
-          </div>
-          <div class="legend-item">
-            <div class="legend-color" style="background: orange;"></div>
-            <span>Manhole</span>
-          </div>
-          <div class="legend-item">
-            <div class="legend-color" style="background: violet;"></div>
-            <span>Ground Level Channel</span>
+          <div class="legend-grid">
+            <div class="legend-item">
+              <div class="legend-color" style="background: blue;"></div>
+              <span>Gutter</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: red;"></div>
+              <span>Down Pipe</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: green;"></div>
+              <span>Roof Drain</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: orange;"></div>
+              <span>Manhole</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: violet;"></div>
+              <span>Ground Channel</span>
+            </div>
           </div>
         </div>
       </div>
+    </div>
+    
+    <!-- Custom zoom controls -->
+    <div id="zoomControls">
+      <button class="zoom-btn" id="zoomIn">+</button>
+      <button class="zoom-btn" id="zoomOut">−</button>
     </div>
   </div>
 
@@ -426,7 +456,7 @@
       tapTolerance: 15,
       touchZoom: true,
       doubleClickZoom: true,
-      zoomControl: false // Disable default zoom controls
+      zoomControl: false
     });
     map.fitBounds(bounds);
 
@@ -514,38 +544,6 @@
         map.invalidateSize();
       }, 100);
     }
-
-    // Bottom sheet functionality
-    const bottomSheet = document.getElementById('bottomSheet');
-    const sheetHandle = document.getElementById('sheetHandle');
-    let isExpanded = false;
-
-    function toggleBottomSheet() {
-      isExpanded = !isExpanded;
-      bottomSheet.classList.toggle('expanded', isExpanded);
-    }
-
-    sheetHandle.addEventListener('click', toggleBottomSheet);
-
-    // Touch gestures for bottom sheet
-    let startY = 0;
-    let currentY = 0;
-
-    sheetHandle.addEventListener('touchstart', (e) => {
-      startY = e.touches[0].clientY;
-    });
-
-    sheetHandle.addEventListener('touchmove', (e) => {
-      e.preventDefault();
-      currentY = e.touches[0].clientY;
-      const deltaY = currentY - startY;
-      
-      if (deltaY > 50 && isExpanded) {
-        toggleBottomSheet();
-      } else if (deltaY < -50 && !isExpanded) {
-        toggleBottomSheet();
-      }
-    });
 
     // Custom zoom controls
     document.getElementById('zoomIn').addEventListener('click', () => {
