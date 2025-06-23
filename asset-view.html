@@ -261,10 +261,13 @@
         alt: label
       }).addTo(map);
       
-      // Wait for image to load before fitting bounds
+      // Wait for image to load before loading markers
       currentOverlay.on('load', () => {
         console.log('✅ Floor image loaded successfully');
         map.fitBounds(bounds);
+        
+        // Now load markers after image is ready
+        loadMarkersForFloor(label);
       });
       
       currentOverlay.on('error', () => {
@@ -275,9 +278,6 @@
       map.fitBounds(bounds);
       
       document.getElementById('currentLocation').textContent = label;
-      
-      // Load markers for this floor and find the target asset
-      loadMarkersForFloor(label);
       
       setTimeout(() => {
         map.invalidateSize();
@@ -342,13 +342,10 @@
             
             // Center map on this asset with proper zoom - wait a bit for image to load
             setTimeout(() => {
-              map.setView([data.lat, data.lng], 0.5);
-              
-              // If still not visible, try fitting bounds around the marker
-              setTimeout(() => {
-                const markerBounds = L.latLngBounds([data.lat, data.lng], [data.lat, data.lng]);
-                map.fitBounds(markerBounds.pad(0.1));
-              }, 500);
+              map.setView([data.lat, data.lng], 1);
+              const markerBounds = L.latLngBounds([data.lat, data.lng], [data.lat + 1, data.lng + 1]);
+              map.fitBounds(markerBounds.pad(0.05));
+              console.log("📍 Centered on:", data.lat, data.lng);
             }, 300);
             
             // Open popup after centering
