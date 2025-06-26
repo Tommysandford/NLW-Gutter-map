@@ -447,11 +447,11 @@
     
     <!-- Floor selector with all new buildings -->
     <select id="floorSelector">
-      <option value="Main.jpg">Main</option>
-      <option value="Outstores.jpg">Outstores</option>
-      <option value="maintenance%20block.jpg">Tech and Maintenance Block</option>
-      <option value="TLB.jpg">TLB</option>
-      <option value="Bookstack%201%20and%202.jpg">Bookstack 1 and 2</option>
+      <option value="Main.png">Main</option>
+      <option value="Outstores.png">Outstores</option>
+      <option value="tech%20and%20maintenance%20block.png">Tech and Maintenance Block</option>
+      <option value="TLB.png">TLB</option>
+      <option value="Bookstack%201%20and%202.png">Bookstack 1 and 2</option>
     </select>
     
     <!-- Action buttons -->
@@ -827,75 +827,70 @@
       allParams: Object.fromEntries(new URLSearchParams(window.location.search))
     });
 
-    // Updated area to floor mapping for all new buildings
+    // Updated area to floor mapping for all new buildings (now using .png)
     const areaToFloorMapping = {
       // Main variations
-      "Main Building": { label: "Main", image: "Main.jpg" },
-      "main building": { label: "Main", image: "Main.jpg" },
-      "Main_Building": { label: "Main", image: "Main.jpg" },
-      "MainBuilding": { label: "Main", image: "Main.jpg" },
-      "Main": { label: "Main", image: "Main.jpg" },
-      "main": { label: "Main", image: "Main.jpg" },
+      "Main": { label: "Main", image: "Main.png" },
+      "main": { label: "Main", image: "Main.png" },
+      "Main_Building": { label: "Main", image: "Main.png" },
+      "MainBuilding": { label: "Main", image: "Main.png" },
       
       // Outstores variations
-      "Outstores": { label: "Outstores", image: "Outstores.jpg" },
-      "outstores": { label: "Outstores", image: "Outstores.jpg" },
-      "Outstore": { label: "Outstores", image: "Outstores.jpg" },
-      "outstore": { label: "Outstores", image: "Outstores.jpg" },
-      "OS": { label: "Outstores", image: "Outstores.jpg" },
-      "os": { label: "Outstores", image: "Outstores.jpg" },
+      "Outstores": { label: "Outstores", image: "Outstores.png" },
+      "OS": { label: "Outstores", image: "Outstores.png" },
+      "os": { label: "Outstores", image: "Outstores.png" },
       
       // Tech and Maintenance Block variations (combined)
-      "Tech": { label: "Tech and Maintenance Block", image: "maintenance%20block.jpg" },
-      "tech": { label: "Tech and Maintenance Block", image: "maintenance%20block.jpg" },
-      "Technology": { label: "Tech and Maintenance Block", image: "maintenance%20block.jpg" },
-      "technology": { label: "Tech and Maintenance Block", image: "maintenance%20block.jpg" },
-      "Technology Block": { label: "Tech and Maintenance Block", image: "maintenance%20block.jpg" },
-      "technology block": { label: "Tech and Maintenance Block", image: "maintenance%20block.jpg" },
-      "TB": { label: "Tech and Maintenance Block", image: "maintenance%20block.jpg" },
-      "tb": { label: "Tech and Maintenance Block", image: "maintenance%20block.jpg" },
-      "Maintenance Block": { label: "Tech and Maintenance Block", image: "maintenance%20block.jpg" },
-      "maintenance block": { label: "Tech and Maintenance Block", image: "maintenance%20block.jpg" },
-      "Maintenance_Block": { label: "Tech and Maintenance Block", image: "maintenance%20block.jpg" },
-      "MaintenanceBlock": { label: "Tech and Maintenance Block", image: "maintenance%20block.jpg" },
-      "Maintenance": { label: "Tech and Maintenance Block", image: "maintenance%20block.jpg" },
-      "maintenance": { label: "Tech and Maintenance Block", image: "maintenance%20block.jpg" },
-      "MB": { label: "Tech and Maintenance Block", image: "maintenance%20block.jpg" },
-      "mb": { label: "Tech and Maintenance Block", image: "maintenance%20block.jpg" },
-      "Tech and Maintenance Block": { label: "Tech and Maintenance Block", image: "maintenance%20block.jpg" },
-      "tech and maintenance block": { label: "Tech and Maintenance Block", image: "maintenance%20block.jpg" },
+      "Tech": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "tech": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "Technology": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "technology": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "Technology Block": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "technology block": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "TB": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "tb": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "Maintenance Block": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "maintenance block": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "Maintenance_Block": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "MaintenanceBlock": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "Maintenance": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "maintenance": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "MB": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "mb": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "Tech and Maintenance Block": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "tech and maintenance block": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
       
       // TLB variations
-      "TLB": { label: "TLB", image: "TLB.jpg" },
-      "tlb": { label: "TLB", image: "TLB.jpg" },
-      "Third Library Building": { label: "TLB", image: "TLB.jpg" },
-      "third library building": { label: "TLB", image: "TLB.jpg" },
-      "Third_Library_Building": { label: "TLB", image: "TLB.jpg" },
-      "ThirdLibraryBuilding": { label: "TLB", image: "TLB.jpg" },
-      "Library": { label: "TLB", image: "TLB.jpg" },
-      "library": { label: "TLB", image: "TLB.jpg" },
+      "TLB": { label: "TLB", image: "TLB.png" },
+      "tlb": { label: "TLB", image: "TLB.png" },
+      "Third Library Building": { label: "TLB", image: "TLB.png" },
+      "third library building": { label: "TLB", image: "TLB.png" },
+      "Third_Library_Building": { label: "TLB", image: "TLB.png" },
+      "ThirdLibraryBuilding": { label: "TLB", image: "TLB.png" },
+      "Library": { label: "TLB", image: "TLB.png" },
+      "library": { label: "TLB", image: "TLB.png" },
       
       // Bookstack 1 and 2 variations (combined)
-      "Bookstack 1": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.jpg" },
-      "bookstack 1": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.jpg" },
-      "Bookstack_1": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.jpg" },
-      "Bookstack1": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.jpg" },
-      "bookstack1": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.jpg" },
-      "BS1": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.jpg" },
-      "bs1": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.jpg" },
-      "Bookstack 2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.jpg" },
-      "bookstack 2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.jpg" },
-      "Bookstack_2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.jpg" },
-      "Bookstack2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.jpg" },
-      "bookstack2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.jpg" },
-      "BS2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.jpg" },
-      "bs2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.jpg" },
-      "Bookstack 1 and 2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.jpg" },
-      "bookstack 1 and 2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.jpg" }
+      "Bookstack 1": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
+      "bookstack 1": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
+      "Bookstack_1": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
+      "Bookstack1": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
+      "bookstack1": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
+      "BS1": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
+      "bs1": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
+      "Bookstack 2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
+      "bookstack 2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
+      "Bookstack_2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
+      "Bookstack2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
+      "bookstack2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
+      "BS2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
+      "bs2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
+      "Bookstack 1 and 2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
+      "bookstack 1 and 2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" }
     };
 
     // Determine initial floor
-    let initialFloor = { label: "Main", image: "Main.jpg" }; // Default
+    let initialFloor = { label: "Main", image: "Main.png" }; // Default
     
     if (area && areaToFloorMapping[area]) {
       initialFloor = areaToFloorMapping[area];
