@@ -33,8 +33,6 @@
       z-index: 1;
     }
 
-
-
     /* Location indicator */
     #locationIndicator {
       position: fixed;
@@ -99,13 +97,6 @@
 
     /* Mobile responsive */
     @media (max-width: 428px) {
-      #backButton {
-        top: 8px;
-        right: 8px;
-        padding: 6px 12px;
-        font-size: 13px;
-      }
-
       #locationIndicator {
         bottom: 16px;
         left: 8px;
@@ -153,7 +144,6 @@
   <div id="appContainer">
     <!-- Full screen map -->
     <div id="map"></div>
-    
     
     <!-- Location indicator -->
     <div id="locationIndicator">
@@ -205,10 +195,13 @@
     let targetAsset = null;
     let highlightedMarker = null;
 
+    // Updated floor bounds for all buildings
     const floorBounds = {
-      "Main Building": [[0, 0], [1000, 1500]],
-      "Outstores and Tech": [[0, 0], [1000, 1500]],
-      "TLB": [[0, 0], [1000, 1500]]
+      "Main": [[0, 0], [1000, 1500]],
+      "Outstores": [[0, 0], [1000, 1500]],
+      "Tech and Maintenance Block": [[0, 0], [1000, 1500]],
+      "TLB": [[0, 0], [1000, 1500]],
+      "Bookstack 1 and 2": [[0, 0], [1000, 1500]]
     };
 
     const iconMap = {
@@ -270,9 +263,6 @@
       currentOverlay.on('error', () => {
         console.error('❌ Failed to load floor image:', imagePath);
       });
-      
-      // Fit bounds immediately as well
-      // (Removed duplicate fitBounds to prevent override)
       
       document.getElementById('currentLocation').textContent = label;
       
@@ -374,9 +364,9 @@
       });
     }
 
-    // Function to find asset across all floors (like your other project)
+    // Function to find asset across all floors
     async function findFloorByAssetId(assetId) {
-      const floors = ["Main Building", "Outstores and Tech", "TLB"];
+      const floors = ["Main", "Outstores", "Tech and Maintenance Block", "TLB", "Bookstack 1 and 2"];
       
       for (const floor of floors) {
         try {
@@ -400,28 +390,83 @@
 
     function getImageFromFloor(floorLabel) {
       const mapping = {
-        "Main Building": "Main.jpg",
-        "Outstores and Tech": "Outstores and Tech.jpg",
-        "TLB": "TLB.jpg"
+        "Main": "Main.png",
+        "Outstores": "Outstores.png",
+        "Tech and Maintenance Block": "tech%20and%20maintenance%20block.png",
+        "TLB": "TLB.png",
+        "Bookstack 1 and 2": "Bookstack%201%20and%202.png"
       };
-      return mapping[floorLabel] || "Main.jpg";
+      return mapping[floorLabel] || "Main.png";
     }
 
-    // Building to floor mapping
+    // Building to floor mapping - updated to match index.html
     const buildingToFloorMapping = {
-      "Main Building": { label: "Main Building", image: "Main.jpg" },
-      "main building": { label: "Main Building", image: "Main.jpg" },
-      "Outstores and Tech": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
-      "outstores and tech": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
-      "Third Library Building": { label: "TLB", image: "TLB.jpg" },
-      "third library building": { label: "TLB", image: "TLB.jpg" },
-      "TLB": { label: "TLB", image: "TLB.jpg" },
-      "tlb": { label: "TLB", image: "TLB.jpg" }
+      // Main variations
+      "Main": { label: "Main", image: "Main.png" },
+      "main": { label: "Main", image: "Main.png" },
+      "Main_Building": { label: "Main", image: "Main.png" },
+      "MainBuilding": { label: "Main", image: "Main.png" },
+      "Main Building": { label: "Main", image: "Main.png" },
+      "main building": { label: "Main", image: "Main.png" },
+      
+      // Outstores variations
+      "Outstores": { label: "Outstores", image: "Outstores.png" },
+      "outstores": { label: "Outstores", image: "Outstores.png" },
+      "OS": { label: "Outstores", image: "Outstores.png" },
+      "os": { label: "Outstores", image: "Outstores.png" },
+      
+      // Tech and Maintenance Block variations (combined)
+      "Tech": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "tech": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "Technology": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "technology": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "Technology Block": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "technology block": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "TB": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "tb": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "Maintenance Block": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "maintenance block": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "Maintenance_Block": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "MaintenanceBlock": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "Maintenance": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "maintenance": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "MB": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "mb": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "Tech and Maintenance Block": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      "tech and maintenance block": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
+      
+      // TLB variations
+      "TLB": { label: "TLB", image: "TLB.png" },
+      "tlb": { label: "TLB", image: "TLB.png" },
+      "Third Library Building": { label: "TLB", image: "TLB.png" },
+      "third library building": { label: "TLB", image: "TLB.png" },
+      "Third_Library_Building": { label: "TLB", image: "TLB.png" },
+      "ThirdLibraryBuilding": { label: "TLB", image: "TLB.png" },
+      "Library": { label: "TLB", image: "TLB.png" },
+      "library": { label: "TLB", image: "TLB.png" },
+      
+      // Bookstack 1 and 2 variations (combined)
+      "Bookstack 1": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
+      "bookstack 1": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
+      "Bookstack_1": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
+      "Bookstack1": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
+      "bookstack1": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
+      "BS1": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
+      "bs1": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
+      "Bookstack 2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
+      "bookstack 2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
+      "Bookstack_2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
+      "Bookstack2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
+      "bookstack2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
+      "BS2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
+      "bs2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
+      "Bookstack 1 and 2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
+      "bookstack 1 and 2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" }
     };
 
     // Initialize the map
     async function initializeMap() {
-      let targetFloor = { label: "Main Building", image: "Main.jpg" }; // Default
+      let targetFloor = { label: "Main", image: "Main.png" }; // Default
 
       if (assetId) {
         console.log('🔍 Searching for asset:', assetId);
