@@ -542,7 +542,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    const bounds = [[0, 0], [1200, 800]];
+    const bounds = [[0, 0], [1000, 1500]];
     const map = L.map('map', {
       crs: L.CRS.Simple,
       minZoom: -2,
@@ -566,13 +566,13 @@
     let currentOverlay;
     let floorName = 'Main';
 
-    // Updated floor bounds for better aspect ratios
+    // Updated floor bounds for all buildings
     const floorBounds = {
-      "Main": [[0, 0], [1200, 800]],
-      "Outstores": [[0, 0], [1000, 1000]],
-      "Tech and Maintenance Block": [[0, 0], [1200, 800]],
-      "TLB": [[0, 0], [1200, 800]],
-      "Bookstack 1 and 2": [[0, 0], [1400, 600]]
+      "Main": [[0, 0], [1000, 1500]],
+      "Outstores": [[0, 0], [1000, 1500]],
+      "Tech and Maintenance Block": [[0, 0], [1000, 1500]],
+      "TLB": [[0, 0], [1000, 1500]],
+      "Bookstack 1 and 2": [[0, 0], [1000, 1500]]
     };
 
     const allMarkers = {};
@@ -636,7 +636,7 @@
 
     function loadFloor(imagePath, label) {
       if (currentOverlay) map.removeLayer(currentOverlay);
-      const bounds = floorBounds[label] || [[0, 0], [1200, 800]];
+      const bounds = floorBounds[label] || [[0, 0], [1000, 1500]];
       currentOverlay = L.imageOverlay(imagePath, bounds).addTo(map);
       map.fitBounds(bounds);
       floorName = label;
