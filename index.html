@@ -445,17 +445,14 @@
       <button id="searchBtn">🔍</button>
     </div>
     
-    <!-- Floor selector -->
+    <!-- Floor selector with all new buildings -->
     <select id="floorSelector">
-      <option value="Main.jpg">Main Building</option>
-      <option value="Outstores and Tech.jpg">Outstores & Tech</option>
+      <option value="Main.jpg">Main</option>
+      <option value="Outstores.jpg">Outstores</option>
+      <option value="tech and maintenance block.jpg">Tech and Maintenance Block</option>
       <option value="TLB.jpg">TLB</option>
+      <option value="Bookstack 1 and 2.jpg">Bookstack 1 and 2</option>
     </select>
-    
-    <!-- Back button -->
-    <button id="backButton" onclick="window.location.href='https://nlw-gutter-cleaning--38x6.glide.page/dl/e531d2'">
-      ← Back to Glide
-    </button>
     
     <!-- Action buttons -->
     <div id="actionButtons">
@@ -567,12 +564,15 @@
     }
 
     let currentOverlay;
-    let floorName = 'Main Building';
+    let floorName = 'Main';
 
+    // Updated floor bounds for all buildings
     const floorBounds = {
-      "Main Building": [[0, 0], [1000, 1500]],
-      "Outstores and Tech": [[0, 0], [1000, 1500]],
-      "TLB": [[0, 0], [1000, 1500]]
+      "Main": [[0, 0], [1000, 1500]],
+      "Outstores": [[0, 0], [1000, 1500]],
+      "Tech and Maintenance Block": [[0, 0], [1000, 1500]],
+      "TLB": [[0, 0], [1000, 1500]],
+      "Bookstack 1 and 2": [[0, 0], [1000, 1500]]
     };
 
     const allMarkers = {};
@@ -827,42 +827,75 @@
       allParams: Object.fromEntries(new URLSearchParams(window.location.search))
     });
 
-    // Updated area to floor mapping based on your current form options
+    // Updated area to floor mapping for all new buildings
     const areaToFloorMapping = {
-      // Main Building variations
-      "Main Building": { label: "Main Building", image: "Main.jpg" },
-      "main building": { label: "Main Building", image: "Main.jpg" },
-      "Main_Building": { label: "Main Building", image: "Main.jpg" },
-      "MainBuilding": { label: "Main Building", image: "Main.jpg" },
-      "Main": { label: "Main Building", image: "Main.jpg" },
-      "main": { label: "Main Building", image: "Main.jpg" },
-      "BS2": { label: "Main Building", image: "Main.jpg" },
-      "bs2": { label: "Main Building", image: "Main.jpg" },
+      // Main variations
+      "Main Building": { label: "Main", image: "Main.jpg" },
+      "main building": { label: "Main", image: "Main.jpg" },
+      "Main_Building": { label: "Main", image: "Main.jpg" },
+      "MainBuilding": { label: "Main", image: "Main.jpg" },
+      "Main": { label: "Main", image: "Main.jpg" },
+      "main": { label: "Main", image: "Main.jpg" },
       
-      // Outstores and Tech variations
-      "Outstores and Tech": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
-      "outstores and tech": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
-      "Outstores_and_Tech": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
-      "OutstoresandTech": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
-      "Outstores & Tech": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
-      "Outstores": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
-      "outstores": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
-      "Tech": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
-      "tech": { label: "Outstores and Tech", image: "Outstores and Tech.jpg" },
+      // Outstores variations
+      "Outstores": { label: "Outstores", image: "Outstores.jpg" },
+      "outstores": { label: "Outstores", image: "Outstores.jpg" },
+      "Outstore": { label: "Outstores", image: "Outstores.jpg" },
+      "outstore": { label: "Outstores", image: "Outstores.jpg" },
+      "OS": { label: "Outstores", image: "Outstores.jpg" },
+      "os": { label: "Outstores", image: "Outstores.jpg" },
       
-      // Third Library Building → TLB
+      // Tech and Maintenance Block variations (combined)
+      "Tech": { label: "Tech and Maintenance Block", image: "tech and maintenance block.jpg" },
+      "tech": { label: "Tech and Maintenance Block", image: "tech and maintenance block.jpg" },
+      "Technology": { label: "Tech and Maintenance Block", image: "tech and maintenance block.jpg" },
+      "technology": { label: "Tech and Maintenance Block", image: "tech and maintenance block.jpg" },
+      "Technology Block": { label: "Tech and Maintenance Block", image: "tech and maintenance block.jpg" },
+      "technology block": { label: "Tech and Maintenance Block", image: "tech and maintenance block.jpg" },
+      "TB": { label: "Tech and Maintenance Block", image: "tech and maintenance block.jpg" },
+      "tb": { label: "Tech and Maintenance Block", image: "tech and maintenance block.jpg" },
+      "Maintenance Block": { label: "Tech and Maintenance Block", image: "tech and maintenance block.jpg" },
+      "maintenance block": { label: "Tech and Maintenance Block", image: "tech and maintenance block.jpg" },
+      "Maintenance_Block": { label: "Tech and Maintenance Block", image: "tech and maintenance block.jpg" },
+      "MaintenanceBlock": { label: "Tech and Maintenance Block", image: "tech and maintenance block.jpg" },
+      "Maintenance": { label: "Tech and Maintenance Block", image: "tech and maintenance block.jpg" },
+      "maintenance": { label: "Tech and Maintenance Block", image: "tech and maintenance block.jpg" },
+      "MB": { label: "Tech and Maintenance Block", image: "tech and maintenance block.jpg" },
+      "mb": { label: "Tech and Maintenance Block", image: "tech and maintenance block.jpg" },
+      "Tech and Maintenance Block": { label: "Tech and Maintenance Block", image: "tech and maintenance block.jpg" },
+      "tech and maintenance block": { label: "Tech and Maintenance Block", image: "tech and maintenance block.jpg" },
+      
+      // TLB variations
+      "TLB": { label: "TLB", image: "TLB.jpg" },
+      "tlb": { label: "TLB", image: "TLB.jpg" },
       "Third Library Building": { label: "TLB", image: "TLB.jpg" },
       "third library building": { label: "TLB", image: "TLB.jpg" },
       "Third_Library_Building": { label: "TLB", image: "TLB.jpg" },
       "ThirdLibraryBuilding": { label: "TLB", image: "TLB.jpg" },
-      "TLB": { label: "TLB", image: "TLB.jpg" },
-      "tlb": { label: "TLB", image: "TLB.jpg" },
       "Library": { label: "TLB", image: "TLB.jpg" },
-      "library": { label: "TLB", image: "TLB.jpg" }
+      "library": { label: "TLB", image: "TLB.jpg" },
+      
+      // Bookstack 1 and 2 variations (combined)
+      "Bookstack 1": { label: "Bookstack 1 and 2", image: "Bookstack 1 and 2.jpg" },
+      "bookstack 1": { label: "Bookstack 1 and 2", image: "Bookstack 1 and 2.jpg" },
+      "Bookstack_1": { label: "Bookstack 1 and 2", image: "Bookstack 1 and 2.jpg" },
+      "Bookstack1": { label: "Bookstack 1 and 2", image: "Bookstack 1 and 2.jpg" },
+      "bookstack1": { label: "Bookstack 1 and 2", image: "Bookstack 1 and 2.jpg" },
+      "BS1": { label: "Bookstack 1 and 2", image: "Bookstack 1 and 2.jpg" },
+      "bs1": { label: "Bookstack 1 and 2", image: "Bookstack 1 and 2.jpg" },
+      "Bookstack 2": { label: "Bookstack 1 and 2", image: "Bookstack 1 and 2.jpg" },
+      "bookstack 2": { label: "Bookstack 1 and 2", image: "Bookstack 1 and 2.jpg" },
+      "Bookstack_2": { label: "Bookstack 1 and 2", image: "Bookstack 1 and 2.jpg" },
+      "Bookstack2": { label: "Bookstack 1 and 2", image: "Bookstack 1 and 2.jpg" },
+      "bookstack2": { label: "Bookstack 1 and 2", image: "Bookstack 1 and 2.jpg" },
+      "BS2": { label: "Bookstack 1 and 2", image: "Bookstack 1 and 2.jpg" },
+      "bs2": { label: "Bookstack 1 and 2", image: "Bookstack 1 and 2.jpg" },
+      "Bookstack 1 and 2": { label: "Bookstack 1 and 2", image: "Bookstack 1 and 2.jpg" },
+      "bookstack 1 and 2": { label: "Bookstack 1 and 2", image: "Bookstack 1 and 2.jpg" }
     };
 
     // Determine initial floor
-    let initialFloor = { label: "Main Building", image: "Main.jpg" }; // Default
+    let initialFloor = { label: "Main", image: "Main.jpg" }; // Default
     
     if (area && areaToFloorMapping[area]) {
       initialFloor = areaToFloorMapping[area];
