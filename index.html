@@ -1,10 +1,4 @@
-// Global counter for simple numbering system
-    let globalAssetCounter = 1;
-
-    // Function to get next asset number
-    function getNextAssetNumber() {
-      return globalAssetCounter++;
-    }<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
   <title>BS2 Interactive Map</title>
@@ -29,7 +23,6 @@
       width: 100vw;
     }
 
-    /* Full-screen map that fills everything */
     #map {
       position: absolute;
       top: 0;
@@ -39,7 +32,6 @@
       z-index: 1;
     }
 
-    /* Top search bar - Google Maps style */
     #searchContainer {
       position: fixed;
       top: 12px;
@@ -74,7 +66,6 @@
       font-size: 18px;
     }
 
-    /* Floor selector - positioned below search bar */
     #floorSelector {
       position: fixed;
       top: 72px;
@@ -98,7 +89,7 @@
       background-size: 16px;
       padding-right: 40px;
     }
-    /* Action buttons - bottom left */
+
     #actionButtons {
       position: fixed;
       bottom: 20px;
@@ -138,7 +129,6 @@
       color: white;
     }
 
-    /* Zoom controls - right side like Google Maps */
     #zoomControls {
       position: fixed;
       right: 12px;
@@ -176,7 +166,6 @@
       border-top: 1px solid #eee;
     }
 
-    /* Category selector - slides up from bottom */
     #categoryPanel {
       position: fixed;
       bottom: -300px;
@@ -213,7 +202,6 @@
       margin-bottom: 16px;
     }
 
-    /* Filter panel - slides down from top */
     #filterPanel {
       position: fixed;
       top: -200px;
@@ -242,7 +230,6 @@
       background: white;
     }
 
-    /* Legend - bottom right corner */
     #legend {
       position: fixed;
       bottom: 20px;
@@ -288,7 +275,6 @@
       border: 1px solid #ddd;
     }
 
-    /* Close buttons */
     .close-btn {
       position: absolute;
       top: 8px;
@@ -310,7 +296,6 @@
       background: #f8f9fa;
     }
 
-    /* Hide default leaflet controls */
     .leaflet-control-zoom {
       display: none;
     }
@@ -319,7 +304,6 @@
       display: none;
     }
 
-    /* iPhone optimizations */
     @media (max-width: 428px) {
       #searchContainer {
         left: 8px;
@@ -332,13 +316,6 @@
         left: 8px;
         right: 8px;
         padding: 10px 12px;
-        font-size: 13px;
-      }
-
-      #backButton {
-        top: 112px;
-        left: 8px;
-        padding: 6px 12px;
         font-size: 13px;
       }
 
@@ -381,7 +358,6 @@
       }
     }
 
-    /* Very small screens */
     @media (max-width: 375px) {
       #searchContainer {
         left: 4px;
@@ -391,10 +367,6 @@
       #floorSelector {
         right: 4px;
         font-size: 12px;
-      }
-
-      #backButton {
-        left: 4px;
       }
 
       #actionButtons {
@@ -412,7 +384,6 @@
       }
     }
 
-    /* Desktop optimizations */
     @media (min-width: 768px) {
       #searchContainer {
         max-width: 500px;
@@ -442,16 +413,13 @@
 </head>
 <body>
   <div id="appContainer">
-    <!-- Full screen map -->
     <div id="map"></div>
     
-    <!-- Search bar -->
     <div id="searchContainer">
       <input type="text" id="searchBox" placeholder="Search markers...">
       <button id="searchBtn">🔍</button>
     </div>
     
-    <!-- Floor selector with updated building names -->
     <select id="floorSelector">
       <option value="Bookstack%201%20and%202.png">Bookstack 1 & 2</option>
       <option value="Main.png">Main Building</option>
@@ -460,7 +428,6 @@
       <option value="tech%20and%20maintenance%20block.png">Technology & Craftsman Block</option>
     </select>
     
-    <!-- Action buttons -->
     <div id="actionButtons">
       <button class="action-btn" id="addMarkerBtn" title="Add Marker">+</button>
       <button class="action-btn" id="deleteMarkerBtn" title="Delete Marker">🗑️</button>
@@ -468,13 +435,11 @@
       <button class="action-btn" id="filterBtn" title="Filter">🔍</button>
     </div>
     
-    <!-- Zoom controls -->
     <div id="zoomControls">
       <button class="zoom-btn" id="zoomIn">+</button>
       <button class="zoom-btn" id="zoomOut">−</button>
     </div>
     
-    <!-- Category selection panel -->
     <div id="categoryPanel">
       <button class="close-btn" id="closeCategoryPanel">×</button>
       <h3>Select Category</h3>
@@ -488,7 +453,6 @@
       </select>
     </div>
     
-    <!-- Filter panel -->
     <div id="filterPanel">
       <button class="close-btn" id="closeFilterPanel">×</button>
       <h3>Filter Markers</h3>
@@ -502,7 +466,6 @@
       </select>
     </div>
     
-    <!-- Legend -->
     <div id="legend">
       <h3>Legend</h3>
       <div class="legend-grid">
@@ -570,9 +533,8 @@
     }
 
     let currentOverlay;
-    let floorName = 'Bookstack 1 & 2'; // Default to first option
+    let floorName = 'Bookstack 1 & 2';
 
-    // Updated floor bounds for all new buildings
     const floorBounds = {
       "Bookstack 1 & 2": [[0, 0], [1000, 1500]],
       "Main Building": [[0, 0], [1000, 1500]],
@@ -592,15 +554,6 @@
     };
 
     function getCategoryIcon(category) {
-
-    const iconMap = {
-      "Gutter": "blue",
-      "Down Pipe": "red",
-      "Roof Drain": "green",
-      "Manhole": "orange",
-      "Ground Level Channel": "violet",
-      "default": "grey"
-    };
       const color = iconMap[category] || iconMap["default"];
       const isMobile = window.innerWidth < 768;
       const iconSize = isMobile ? [30, 49] : [25, 41];
@@ -632,6 +585,11 @@
         const marker = L.marker([data.lat, data.lng], { icon }).addTo(map);
         marker.bindPopup(data.note);
         allMarkers[floor].push({ key, marker, note: data.note, category: data.category });
+        
+        if (assetId && category) {
+          marker.setOpacity(0);
+        }
+        
         marker.on('click', () => {
           if (deleteMode && confirm("Delete this marker?")) {
             db.ref(`bs2_markers/${floor}/${key}`).remove();
@@ -662,7 +620,6 @@
       }, 100);
     }
 
-    // UI Controls
     const addMarkerBtn = document.getElementById('addMarkerBtn');
     const deleteMarkerBtn = document.getElementById('deleteMarkerBtn');
     const moveMarkerBtn = document.getElementById('moveMarkerBtn');
@@ -750,7 +707,6 @@
       filterPanel.classList.remove('show');
     });
 
-    // Zoom controls
     document.getElementById('zoomIn').addEventListener('click', () => {
       map.zoomIn();
     });
@@ -759,7 +715,6 @@
       map.zoomOut();
     });
 
-    // Floor selector
     const floorSelector = document.getElementById('floorSelector');
     floorSelector.addEventListener('change', e => {
       const selected = e.target.value;
@@ -767,7 +722,6 @@
       loadFloor(selected, label);
     });
 
-    // Search functionality
     const searchBox = document.getElementById('searchBox');
     const searchBtn = document.getElementById('searchBtn');
 
@@ -797,7 +751,6 @@
       }
     });
 
-    // Filter functionality
     const filterDropdown = document.getElementById('filterDropdown');
     filterDropdown.addEventListener('change', (e) => {
       const selectedCategory = e.target.value;
@@ -812,18 +765,15 @@
       });
     });
 
-    // Enhanced URL parameter handling for Glide integration
     function getQueryParam(param) {
       const urlParams = new URLSearchParams(window.location.search);
       return urlParams.get(param);
     }
 
-    // Get URL parameters with multiple possible names and decode them properly
     const assetId = getQueryParam('assetId') || getQueryParam('Asset_ID') || getQueryParam('assetid');
     const category = getQueryParam('category') || getQueryParam('Asset_Category') || getQueryParam('Asset_category');
     let area = getQueryParam('area') || getQueryParam('location') || getQueryParam('Location') || getQueryParam('Building_Location') || getQueryParam('Building Location');
 
-    // Decode URL encoding if present
     if (area) {
       try {
         area = decodeURIComponent(area);
@@ -832,7 +782,6 @@
       }
     }
 
-    // Debug logging
     console.log('URL Parameters:', {
       assetId: assetId,
       category: category,
@@ -842,17 +791,16 @@
       allParams: Object.fromEntries(new URLSearchParams(window.location.search))
     });
 
-    // Updated area to floor mapping using your actual file names
     const areaToFloorMapping = {
-      // Bookstack 1 & 2 variations
       "Bookstack 1 & 2": { label: "Bookstack 1 & 2", image: "Bookstack%201%20and%202.png" },
       "bookstack 1 & 2": { label: "Bookstack 1 & 2", image: "Bookstack%201%20and%202.png" },
       "Bookstack 1 and 2": { label: "Bookstack 1 & 2", image: "Bookstack%201%20and%202.png" },
       "bookstack 1 and 2": { label: "Bookstack 1 & 2", image: "Bookstack%201%20and%202.png" },
       "BS": { label: "Bookstack 1 & 2", image: "Bookstack%201%20and%202.png" },
       "bs": { label: "Bookstack 1 & 2", image: "Bookstack%201%20and%202.png" },
+      "Bookstack": { label: "Bookstack 1 & 2", image: "Bookstack%201%20and%202.png" },
+      "bookstack": { label: "Bookstack 1 & 2", image: "Bookstack%201%20and%202.png" },
       
-      // Main Building variations
       "Main Building": { label: "Main Building", image: "Main.png" },
       "main building": { label: "Main Building", image: "Main.png" },
       "Main": { label: "Main Building", image: "Main.png" },
@@ -860,7 +808,6 @@
       "MB": { label: "Main Building", image: "Main.png" },
       "mb": { label: "Main Building", image: "Main.png" },
       
-      // Third Library Building variations
       "Third Library Building": { label: "Third Library Building", image: "TLB.png" },
       "third library building": { label: "Third Library Building", image: "TLB.png" },
       "TLB": { label: "Third Library Building", image: "TLB.png" },
@@ -870,13 +817,11 @@
       "Library": { label: "Third Library Building", image: "TLB.png" },
       "library": { label: "Third Library Building", image: "TLB.png" },
       
-      // Outstores variations
       "Outstores": { label: "Outstores", image: "Outstores.png" },
       "outstores": { label: "Outstores", image: "Outstores.png" },
       "OS": { label: "Outstores", image: "Outstores.png" },
       "os": { label: "Outstores", image: "Outstores.png" },
       
-      // Technology & Craftsman Block variations (combined)
       "Technology & Craftsman Block": { label: "Technology & Craftsman Block", image: "tech%20and%20maintenance%20block.png" },
       "technology & craftsman block": { label: "Technology & Craftsman Block", image: "tech%20and%20maintenance%20block.png" },
       "Technology Block": { label: "Technology & Craftsman Block", image: "tech%20and%20maintenance%20block.png" },
@@ -897,32 +842,27 @@
       "cb": { label: "Technology & Craftsman Block", image: "tech%20and%20maintenance%20block.png" }
     };
 
-    // Determine initial floor
     let initialFloor = { label: "Bookstack 1 & 2", image: "Bookstack%201%20and%202.png" };
     
     if (area && areaToFloorMapping[area]) {
       initialFloor = areaToFloorMapping[area];
-      console.log('✅ Floor selected based on area:', area, '→', initialFloor);
+      console.log('Floor selected based on area:', area, '→', initialFloor);
     } else if (area) {
-      console.warn('❌ Unknown area parameter:', area);
+      console.warn('Unknown area parameter:', area);
       console.log('Available options:', Object.keys(areaToFloorMapping));
-      console.log('🔄 Using default floor');
+      console.log('Using default floor');
     } else {
-      console.log('ℹ️ No area parameter found, using default floor');
+      console.log('No area parameter found, using default floor');
     }
 
-    // Set the floor selector and load the appropriate floor
     floorSelector.value = initialFloor.image;
     loadFloor(initialFloor.image, initialFloor.label);
 
-    // Show asset info if available
     if (assetId || category) {
-      console.log('📋 Asset info available:', { assetId, category });
-      // Pre-select category if provided
+      console.log('Asset info available:', { assetId, category });
       if (category) {
         const categorySelector = document.getElementById('manualCategorySelector');
         if (categorySelector) {
-          // Handle category variations
           const categoryMap = {
             "Roof Drain": "Roof Drain",
             "roof drain": "Roof Drain",
@@ -938,12 +878,11 @@
           
           const mappedCategory = categoryMap[category] || category;
           categorySelector.value = mappedCategory;
-          console.log('🏷️ Category pre-selected:', category, '→', mappedCategory);
+          console.log('Category pre-selected:', category, '→', mappedCategory);
         }
       }
     }
 
-    // Map click handler - Back to original numbering system
     map.on('click', e => {
       if (!addingMode) return;
       
@@ -970,12 +909,10 @@
       
       db.ref(`bs2_markers/${floorName}`).push(newMarker);
       
-      // Close category panel after adding
       categoryPanel.classList.remove('show');
       resetAllModes();
     });
 
-    // Handle resize
     window.addEventListener('resize', () => {
       setTimeout(() => {
         map.invalidateSize();
@@ -989,4 +926,4 @@
     });
   </script>
 </body>
-</html> "
+</html>
