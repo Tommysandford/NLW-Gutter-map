@@ -586,7 +586,8 @@
         marker.bindPopup(data.note);
         allMarkers[floor].push({ key, marker, note: data.note, category: data.category });
         
-        if (assetId && category) {
+        // Hide existing markers when adding from Glide, but keep newly added ones visible
+        if (assetId && category && !data.note.includes(assetId)) {
           marker.setOpacity(0);
         }
         
