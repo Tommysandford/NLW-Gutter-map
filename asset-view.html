@@ -197,11 +197,11 @@
 
     // Updated floor bounds for all buildings
     const floorBounds = {
-      "Main": [[0, 0], [1000, 1500]],
+      "Bookstack 1 & 2": [[0, 0], [1000, 1500]],
+      "Main Building": [[0, 0], [1000, 1500]],
+      "Third Library Building": [[0, 0], [1000, 1500]],
       "Outstores": [[0, 0], [1000, 1500]],
-      "Tech and Maintenance Block": [[0, 0], [1000, 1500]],
-      "TLB": [[0, 0], [1000, 1500]],
-      "Bookstack 1 and 2": [[0, 0], [1000, 1500]]
+      "Technology & Craftsman Block": [[0, 0], [1000, 1500]]
     };
 
     const iconMap = {
@@ -366,7 +366,7 @@
 
     // Function to find asset across all floors
     async function findFloorByAssetId(assetId) {
-      const floors = ["Main", "Outstores", "Tech and Maintenance Block", "TLB", "Bookstack 1 and 2"];
+      const floors = ["Bookstack 1 & 2", "Main Building", "Third Library Building", "Outstores", "Technology & Craftsman Block"];
       
       for (const floor of floors) {
         try {
@@ -390,24 +390,44 @@
 
     function getImageFromFloor(floorLabel) {
       const mapping = {
-        "Main": "Main.png",
+        "Bookstack 1 & 2": "Bookstack%201%20and%202.png",
+        "Main Building": "Main.png",
+        "Third Library Building": "TLB.png",
         "Outstores": "Outstores.png",
-        "Tech and Maintenance Block": "tech%20and%20maintenance%20block.png",
-        "TLB": "TLB.png",
-        "Bookstack 1 and 2": "Bookstack%201%20and%202.png"
+        "Technology & Craftsman Block": "tech%20and%20maintenance%20block.png"
       };
-      return mapping[floorLabel] || "Main.png";
+      return mapping[floorLabel] || "Bookstack%201%20and%202.png";
     }
 
-    // Building to floor mapping - updated to match index.html
+    // Building to floor mapping - updated to match new structure
     const buildingToFloorMapping = {
-      // Main variations
-      "Main": { label: "Main", image: "Main.png" },
-      "main": { label: "Main", image: "Main.png" },
-      "Main_Building": { label: "Main", image: "Main.png" },
-      "MainBuilding": { label: "Main", image: "Main.png" },
-      "Main Building": { label: "Main", image: "Main.png" },
-      "main building": { label: "Main", image: "Main.png" },
+      // Bookstack 1 & 2 variations
+      "Bookstack 1 & 2": { label: "Bookstack 1 & 2", image: "Bookstack%201%20and%202.png" },
+      "bookstack 1 & 2": { label: "Bookstack 1 & 2", image: "Bookstack%201%20and%202.png" },
+      "Bookstack 1 and 2": { label: "Bookstack 1 & 2", image: "Bookstack%201%20and%202.png" },
+      "bookstack 1 and 2": { label: "Bookstack 1 & 2", image: "Bookstack%201%20and%202.png" },
+      "BS": { label: "Bookstack 1 & 2", image: "Bookstack%201%20and%202.png" },
+      "bs": { label: "Bookstack 1 & 2", image: "Bookstack%201%20and%202.png" },
+      "Bookstack": { label: "Bookstack 1 & 2", image: "Bookstack%201%20and%202.png" },
+      "bookstack": { label: "Bookstack 1 & 2", image: "Bookstack%201%20and%202.png" },
+      
+      // Main Building variations
+      "Main Building": { label: "Main Building", image: "Main.png" },
+      "main building": { label: "Main Building", image: "Main.png" },
+      "Main": { label: "Main Building", image: "Main.png" },
+      "main": { label: "Main Building", image: "Main.png" },
+      "MB": { label: "Main Building", image: "Main.png" },
+      "mb": { label: "Main Building", image: "Main.png" },
+      
+      // Third Library Building variations
+      "Third Library Building": { label: "Third Library Building", image: "TLB.png" },
+      "third library building": { label: "Third Library Building", image: "TLB.png" },
+      "TLB": { label: "Third Library Building", image: "TLB.png" },
+      "tlb": { label: "Third Library Building", image: "TLB.png" },
+      "BS3": { label: "Third Library Building", image: "TLB.png" },
+      "bs3": { label: "Third Library Building", image: "TLB.png" },
+      "Library": { label: "Third Library Building", image: "TLB.png" },
+      "library": { label: "Third Library Building", image: "TLB.png" },
       
       // Outstores variations
       "Outstores": { label: "Outstores", image: "Outstores.png" },
@@ -415,58 +435,32 @@
       "OS": { label: "Outstores", image: "Outstores.png" },
       "os": { label: "Outstores", image: "Outstores.png" },
       
-      // Tech and Maintenance Block variations (combined)
-      "Tech": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
-      "tech": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
-      "Technology": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
-      "technology": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
-      "Technology Block": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
-      "technology block": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
-      "TB": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
-      "tb": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
-      "Maintenance Block": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
-      "maintenance block": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
-      "Maintenance_Block": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
-      "MaintenanceBlock": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
-      "Maintenance": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
-      "maintenance": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
-      "MB": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
-      "mb": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
-      "Tech and Maintenance Block": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
-      "tech and maintenance block": { label: "Tech and Maintenance Block", image: "tech%20and%20maintenance%20block.png" },
-      
-      // TLB variations
-      "TLB": { label: "TLB", image: "TLB.png" },
-      "tlb": { label: "TLB", image: "TLB.png" },
-      "Third Library Building": { label: "TLB", image: "TLB.png" },
-      "third library building": { label: "TLB", image: "TLB.png" },
-      "Third_Library_Building": { label: "TLB", image: "TLB.png" },
-      "ThirdLibraryBuilding": { label: "TLB", image: "TLB.png" },
-      "Library": { label: "TLB", image: "TLB.png" },
-      "library": { label: "TLB", image: "TLB.png" },
-      
-      // Bookstack 1 and 2 variations (combined)
-      "Bookstack 1": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
-      "bookstack 1": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
-      "Bookstack_1": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
-      "Bookstack1": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
-      "bookstack1": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
-      "BS1": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
-      "bs1": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
-      "Bookstack 2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
-      "bookstack 2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
-      "Bookstack_2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
-      "Bookstack2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
-      "bookstack2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
-      "BS2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
-      "bs2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
-      "Bookstack 1 and 2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" },
-      "bookstack 1 and 2": { label: "Bookstack 1 and 2", image: "Bookstack%201%20and%202.png" }
+      // Technology & Craftsman Block variations (combined)
+      "Technology & Craftsman Block": { label: "Technology & Craftsman Block", image: "tech%20and%20maintenance%20block.png" },
+      "technology & craftsman block": { label: "Technology & Craftsman Block", image: "tech%20and%20maintenance%20block.png" },
+      "Technology Block": { label: "Technology & Craftsman Block", image: "tech%20and%20maintenance%20block.png" },
+      "technology block": { label: "Technology & Craftsman Block", image: "tech%20and%20maintenance%20block.png" },
+      "Tech Block": { label: "Technology & Craftsman Block", image: "tech%20and%20maintenance%20block.png" },
+      "tech block": { label: "Technology & Craftsman Block", image: "tech%20and%20maintenance%20block.png" },
+      "Technology": { label: "Technology & Craftsman Block", image: "tech%20and%20maintenance%20block.png" },
+      "technology": { label: "Technology & Craftsman Block", image: "tech%20and%20maintenance%20block.png" },
+      "Tech": { label: "Technology & Craftsman Block", image: "tech%20and%20maintenance%20block.png" },
+      "tech": { label: "Technology & Craftsman Block", image: "tech%20and%20maintenance%20block.png" },
+      "TB": { label: "Technology & Craftsman Block", image: "tech%20and%20maintenance%20block.png" },
+      "tb": { label: "Technology & Craftsman Block", image: "tech%20and%20maintenance%20block.png" },
+      "Craftsman Block": { label: "Technology & Craftsman Block", image: "tech%20and%20maintenance%20block.png" },
+      "craftsman block": { label: "Technology & Craftsman Block", image: "tech%20and%20maintenance%20block.png" },
+      "Craftsman": { label: "Technology & Craftsman Block", image: "tech%20and%20maintenance%20block.png" },
+      "craftsman": { label: "Technology & Craftsman Block", image: "tech%20and%20maintenance%20block.png" },
+      "CB": { label: "Technology & Craftsman Block", image: "tech%20and%20maintenance%20block.png" },
+      "cb": { label: "Technology & Craftsman Block", image: "tech%20and%20maintenance%20block.png" },
+      "Tech and Maintenance Block": { label: "Technology & Craftsman Block", image: "tech%20and%20maintenance%20block.png" },
+      "tech and maintenance block": { label: "Technology & Craftsman Block", image: "tech%20and%20maintenance%20block.png" }
     };
 
     // Initialize the map
     async function initializeMap() {
-      let targetFloor = { label: "Main", image: "Main.png" }; // Default
+      let targetFloor = { label: "Bookstack 1 & 2", image: "Bookstack%201%20and%202.png" }; // Default
 
       if (assetId) {
         console.log('🔍 Searching for asset:', assetId);
