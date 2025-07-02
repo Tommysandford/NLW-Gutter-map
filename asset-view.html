@@ -23,7 +23,6 @@
       width: 100vw;
     }
 
-    /* Full-screen map */
     #map {
       position: absolute;
       top: 0;
@@ -33,33 +32,84 @@
       z-index: 1;
     }
 
-    /* Location indicator */
-    #locationIndicator {
+    #searchContainer {
       position: fixed;
-      bottom: 20px;
+      top: 12px;
       left: 12px;
+      right: 12px;
       z-index: 1000;
       background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      height: 48px;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    #searchBox {
+      flex: 1;
+      border: none;
+      padding: 0 16px;
+      font-size: 16px;
+      background: transparent;
+      outline: none;
+    }
+
+    #searchBtn {
+      background: transparent;
+      border: none;
+      padding: 12px 16px;
+      cursor: pointer;
+      color: #666;
+      font-size: 18px;
+    }
+
+    #floorSelector {
+      position: fixed;
+      top: 72px;
+      left: 12px;
+      right: 12px;
+      z-index: 1000;
+      background: white;
+      border: none;
       border-radius: 8px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.15);
       padding: 12px 16px;
       font-size: 14px;
       font-weight: 500;
-      color: #333;
+      max-width: 400px;
+      margin: 0 auto;
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 16px;
+      padding-right: 40px;
     }
 
-    /* Add Asset Button */
-    #addAssetBtn {
+    #actionButtons {
       position: fixed;
-      top: 20px;
-      right: 12px;
+      bottom: 20px;
+      left: 12px;
       z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: white;
+      padding: 12px;
+      border-radius: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    .action-btn {
       width: 48px;
       height: 48px;
       border: none;
       border-radius: 50%;
-      background: #28a745;
-      color: white;
+      background: #f8f9fa;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -69,16 +119,16 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
-    #addAssetBtn:hover {
-      background: #218838;
+    .action-btn:hover {
+      background: #e9ecef;
       transform: scale(1.05);
     }
 
-    #addAssetBtn.active {
+    .action-btn.active {
       background: #dc3545;
+      color: white;
     }
 
-    /* Zoom controls */
     #zoomControls {
       position: fixed;
       right: 12px;
@@ -116,7 +166,6 @@
       border-top: 1px solid #eee;
     }
 
-    /* Category Panel */
     #categoryPanel {
       position: fixed;
       bottom: -300px;
@@ -153,6 +202,79 @@
       margin-bottom: 16px;
     }
 
+    #filterPanel {
+      position: fixed;
+      top: -200px;
+      left: 12px;
+      right: 12px;
+      z-index: 1001;
+      background: white;
+      border-radius: 0 0 12px 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      transition: top 0.3s ease;
+      padding: 20px;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    #filterPanel.show {
+      top: 70px;
+    }
+
+    #filterDropdown {
+      width: 100%;
+      padding: 16px;
+      border: 2px solid #e9ecef;
+      border-radius: 12px;
+      font-size: 16px;
+      background: white;
+    }
+
+    #legend {
+      position: fixed;
+      bottom: 20px;
+      right: 12px;
+      z-index: 1000;
+      background: white;
+      padding: 12px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      min-width: 160px;
+      max-width: 200px;
+    }
+
+    #legend h3 {
+      margin: 0 0 8px 0;
+      font-size: 13px;
+      font-weight: 600;
+      color: #333;
+      text-align: center;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 6px;
+    }
+
+    .legend-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      padding: 2px 0;
+    }
+
+    .legend-color {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      border: 1px solid #ddd;
+    }
+
     .close-btn {
       position: absolute;
       top: 8px;
@@ -174,7 +296,6 @@
       background: #f8f9fa;
     }
 
-    /* Hide default leaflet controls */
     .leaflet-control-zoom {
       display: none;
     }
@@ -183,18 +304,27 @@
       display: none;
     }
 
-    /* Mobile responsive */
     @media (max-width: 428px) {
-      #locationIndicator {
-        bottom: 16px;
+      #searchContainer {
         left: 8px;
+        right: 8px;
+        height: 44px;
+      }
+
+      #floorSelector {
+        top: 60px;
+        left: 8px;
+        right: 8px;
         padding: 10px 12px;
         font-size: 13px;
       }
 
-      #addAssetBtn {
-        top: 16px;
-        right: 8px;
+      #actionButtons {
+        bottom: 16px;
+        left: 8px;
+      }
+
+      .action-btn {
         width: 44px;
         height: 44px;
         font-size: 18px;
@@ -208,6 +338,75 @@
         width: 44px;
         height: 44px;
         font-size: 18px;
+      }
+
+      #legend {
+        bottom: 16px;
+        right: 8px;
+        padding: 10px;
+        min-width: 140px;
+        max-width: 180px;
+      }
+
+      #filterPanel.show {
+        top: 120px;
+      }
+
+      #filterPanel {
+        left: 8px;
+        right: 8px;
+      }
+    }
+
+    @media (max-width: 375px) {
+      #searchContainer {
+        left: 4px;
+        right: 4px;
+      }
+
+      #floorSelector {
+        right: 4px;
+        font-size: 12px;
+      }
+
+      #actionButtons {
+        left: 4px;
+      }
+
+      #zoomControls {
+        right: 4px;
+      }
+
+      #legend {
+        right: 4px;
+        min-width: 130px;
+        max-width: 160px;
+      }
+    }
+
+    @media (min-width: 768px) {
+      #searchContainer {
+        max-width: 500px;
+      }
+
+      #actionButtons {
+        bottom: 24px;
+      }
+
+      .action-btn {
+        width: 56px;
+        height: 56px;
+        font-size: 22px;
+      }
+
+      .zoom-btn {
+        width: 52px;
+        height: 52px;
+      }
+
+      #legend {
+        min-width: 180px;
+        max-width: 220px;
       }
     }
 
@@ -238,24 +437,33 @@
 </head>
 <body>
   <div id="appContainer">
-    <!-- Full screen map -->
     <div id="map"></div>
     
-    <!-- Location indicator -->
-    <div id="locationIndicator">
-      Location: <span id="currentLocation">Loading...</span>
+    <div id="searchContainer">
+      <input type="text" id="searchBox" placeholder="Search markers...">
+      <button id="searchBtn">🔍</button>
     </div>
-
-    <!-- Add Asset Button - only show if asset not found -->
-    <button id="addAssetBtn" title="Add Missing Asset" style="display: none;">+</button>
     
-    <!-- Zoom controls -->
+    <select id="floorSelector">
+      <option value="Bookstack%201%20and%202.png">Bookstack 1 & 2</option>
+      <option value="Main.png">Main Building</option>
+      <option value="TLB.png">Third Library Building</option>
+      <option value="Outstores.png">Outstores</option>
+      <option value="tech%20and%20maintenance%20block.png">Technology & Craftsman Block</option>
+    </select>
+    
+    <div id="actionButtons">
+      <button class="action-btn" id="addMarkerBtn" title="Add Marker">+</button>
+      <button class="action-btn" id="deleteMarkerBtn" title="Delete Marker">🗑️</button>
+      <button class="action-btn" id="moveMarkerBtn" title="Move Marker">↔️</button>
+      <button class="action-btn" id="filterBtn" title="Filter">🔍</button>
+    </div>
+    
     <div id="zoomControls">
       <button class="zoom-btn" id="zoomIn">+</button>
       <button class="zoom-btn" id="zoomOut">−</button>
     </div>
-
-    <!-- Category Panel -->
+    
     <div id="categoryPanel">
       <button class="close-btn" id="closeCategoryPanel">×</button>
       <h3>Select Category</h3>
@@ -267,6 +475,45 @@
         <option value="Manhole">Manhole</option>
         <option value="Ground Level Channel">Ground Level Channel</option>
       </select>
+    </div>
+    
+    <div id="filterPanel">
+      <button class="close-btn" id="closeFilterPanel">×</button>
+      <h3>Filter Markers</h3>
+      <select id="filterDropdown">
+        <option value="All">All Categories</option>
+        <option value="Gutter">Gutter</option>
+        <option value="Down Pipe">Down Pipe</option>
+        <option value="Roof Drain">Roof Drain</option>
+        <option value="Manhole">Manhole</option>
+        <option value="Ground Level Channel">Ground Level Channel</option>
+      </select>
+    </div>
+    
+    <div id="legend">
+      <h3>Legend</h3>
+      <div class="legend-grid">
+        <div class="legend-item">
+          <div class="legend-color" style="background: blue;"></div>
+          <span>Gutter</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background: red;"></div>
+          <span>Down Pipe</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background: green;"></div>
+          <span>Roof Drain</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background: orange;"></div>
+          <span>Manhole</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background: violet;"></div>
+          <span>Ground Channel</span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -303,14 +550,15 @@
       doubleClickZoom: true,
       zoomControl: false
     });
+    map.fitBounds(bounds);
+
+    if (window.innerWidth < 768) {
+      map.setZoom(-1.5);
+    }
 
     let currentOverlay;
-    let targetAsset = null;
-    let highlightedMarker = null;
-    let currentFloor = null;
-    let addingMode = false;
+    let floorName = 'Bookstack 1 & 2';
 
-    // Updated floor bounds for all buildings
     const floorBounds = {
       "Bookstack 1 & 2": [[0, 0], [1000, 1500]],
       "Main Building": [[0, 0], [1000, 1500]],
@@ -319,6 +567,7 @@
       "Technology & Craftsman Block": [[0, 0], [1000, 1500]]
     };
 
+    const allMarkers = {};
     const iconMap = {
       "Gutter": "blue",
       "Down Pipe": "red",
@@ -328,24 +577,11 @@
       "default": "grey"
     };
 
-    // URL parameter handling
-    function getQueryParam(param) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(param);
-    }
-
-    const assetId = getQueryParam('assetId') || getQueryParam('asset');
-    const building = getQueryParam('building') || getQueryParam('Building_Location') || getQueryParam('area');
-    const category = getQueryParam('category') || getQueryParam('Asset_Category');
-
-    console.log('Asset Detail View Parameters:', { assetId, building, category, fullURL: window.location.href });
-
-    function getCategoryIcon(category, isHighlighted = false) {
+    function getCategoryIcon(category) {
       const color = iconMap[category] || iconMap["default"];
-      
-      // Use consistent icon size regardless of zoom or highlight status
-      const iconSize = [25, 41];
-      const iconAnchor = [12, 41];
+      const isMobile = window.innerWidth < 768;
+      const iconSize = isMobile ? [30, 49] : [25, 41];
+      const iconAnchor = isMobile ? [15, 49] : [12, 41];
       
       return L.icon({
         iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
@@ -357,175 +593,260 @@
       });
     }
 
+    function loadMarkers(floor) {
+      map.eachLayer(layer => {
+        if (layer instanceof L.Marker) map.removeLayer(layer);
+      });
+      if (!Array.isArray(allMarkers[floor])) allMarkers[floor] = [];
+      const floorRef = db.ref(`bs2_markers/${floor}`);
+      floorRef.off();
+
+      floorRef.on('child_added', snapshot => {
+        const data = snapshot.val();
+        const key = snapshot.key;
+        if (typeof data.lat !== "number" || typeof data.lng !== "number" || typeof data.note !== "string") return;
+        const icon = getCategoryIcon(data.category);
+        const marker = L.marker([data.lat, data.lng], { icon }).addTo(map);
+        
+        // Check if this is our target asset - look in note field primarily
+        const isTargetAsset = assetId && (
+          data.note === assetId ||                    // Exact match in note
+          data.note.includes(assetId) ||              // Partial match in note  
+          data.assetId === assetId ||                 // Match assetId field if it exists
+          key === assetId                             // Match the Firebase key
+        );
+
+        if (isTargetAsset) {
+          // This is our target asset - highlight it and center on it
+          marker.bindPopup(`
+            <div>
+              <strong>Asset ID: ${assetId}</strong><br>
+              <em>Category: ${data.category}</em><br>
+              <em>Location: ${floor}</em>
+            </div>
+          `);
+
+          // Center map on this asset
+          setTimeout(() => {
+            map.setView([data.lat, data.lng], 0.5);
+            marker.openPopup();
+          }, 500);
+
+          // Add pulsing animation
+          setTimeout(() => {
+            const markerElement = marker.getElement();
+            if (markerElement) {
+              markerElement.classList.add('highlighted-marker');
+            }
+          }, 100);
+        } else {
+          marker.bindPopup(data.note);
+        }
+        
+        allMarkers[floor].push({ key, marker, note: data.note, category: data.category });
+        
+        marker.on('click', () => {
+          if (deleteMode && confirm("Delete this marker?")) {
+            db.ref(`bs2_markers/${floor}/${key}`).remove();
+          }
+        });
+      });
+
+      floorRef.on('child_removed', snapshot => {
+        const key = snapshot.key;
+        const markerEntry = allMarkers[floor].find(m => m.key === key);
+        if (markerEntry) {
+          map.removeLayer(markerEntry.marker);
+          allMarkers[floor] = allMarkers[floor].filter(m => m.key !== key);
+        }
+      });
+    }
+
     function loadFloor(imagePath, label) {
       if (currentOverlay) map.removeLayer(currentOverlay);
-      
       const bounds = floorBounds[label] || [[0, 0], [1000, 1500]];
-      currentFloor = label;
-      
-      console.log('🏢 Loading floor image:', imagePath, 'for location:', label);
-      
-      currentOverlay = L.imageOverlay(imagePath, bounds, {
-        opacity: 1,
-        alt: label
-      }).addTo(map);
-      
-      // Wait for image to load before fitting bounds
-      currentOverlay.on('load', () => {
-        console.log('✅ Floor image loaded successfully');
-        map.fitBounds(bounds);
-      });
-      
-      currentOverlay.on('error', () => {
-        console.error('❌ Failed to load floor image:', imagePath);
-      });
-      
-      document.getElementById('currentLocation').textContent = label;
-      
-      // Load markers for this floor and find the target asset
-      loadMarkersForFloor(label);
+      currentOverlay = L.imageOverlay(imagePath, bounds).addTo(map);
+      map.fitBounds(bounds);
+      floorName = label;
+      loadMarkers(label);
       
       setTimeout(() => {
         map.invalidateSize();
       }, 100);
     }
 
-    function loadMarkersForFloor(floor) {
-      // Clear existing markers
-      map.eachLayer(layer => {
-        if (layer instanceof L.Marker) map.removeLayer(layer);
-      });
+    const addMarkerBtn = document.getElementById('addMarkerBtn');
+    const deleteMarkerBtn = document.getElementById('deleteMarkerBtn');
+    const moveMarkerBtn = document.getElementById('moveMarkerBtn');
+    const filterBtn = document.getElementById('filterBtn');
+    const categoryPanel = document.getElementById('categoryPanel');
+    const filterPanel = document.getElementById('filterPanel');
+    const closeCategoryPanel = document.getElementById('closeCategoryPanel');
+    const closeFilterPanel = document.getElementById('closeFilterPanel');
 
-      const floorRef = db.ref(`bs2_markers/${floor}`);
-      
-      floorRef.once('value', snapshot => {
-        const markers = snapshot.val();
-        if (!markers) {
-          console.log('No markers found for floor:', floor);
-          if (assetId) {
-            showAddAssetButton();
-          }
-          return;
-        }
+    let addingMode = false;
+    let deleteMode = false;
+    let moveMode = false;
 
-        let foundTargetAsset = false;
-
-        Object.entries(markers).forEach(([key, data]) => {
-          if (typeof data.lat !== "number" || typeof data.lng !== "number" || typeof data.note !== "string") return;
-          
-          // Check if this is our target asset - look in note field primarily
-          const isTargetAsset = assetId && (
-            data.note === assetId ||                    // Exact match in note
-            data.note.includes(assetId) ||              // Partial match in note  
-            data.assetId === assetId ||                 // Match assetId field if it exists
-            key === assetId                             // Match the Firebase key
-          );
-
-          console.log('Checking marker:', {
-            key: key,
-            note: data.note,
-            assetId: data.assetId,
-            coordinates: [data.lat, data.lng],
-            searchingFor: assetId,
-            isMatch: isTargetAsset
-          });
-
-          // Only show the target asset - hide all others
-          if (isTargetAsset) {
-            foundTargetAsset = true;
-            const icon = getCategoryIcon(data.category, true);
-            const marker = L.marker([data.lat, data.lng], { 
-              icon: icon,
-              zIndexOffset: 1000 // Keep marker on top
-            }).addTo(map);
-            
-            marker.bindPopup(`
-              <div>
-                <strong>${data.note}</strong><br>
-                <em>Category: ${data.category}</em><br>
-                <em>Location: ${floor}</em>
-              </div>
-            `);
-
-            highlightedMarker = marker;
-            
-            // Center map on this asset with proper zoom - wait a bit for image to load
-            setTimeout(() => {
-              map.setView([data.lat, data.lng], 0.5);
-              
-              // If still not visible, try fitting bounds around the marker
-              setTimeout(() => {
-                const markerBounds = L.latLngBounds([data.lat, data.lng], [data.lat, data.lng]);
-                map.fitBounds(markerBounds.pad(0.1));
-              }, 500);
-            }, 300);
-            
-            // Open popup after centering
-            setTimeout(() => {
-              marker.openPopup();
-            }, 800);
-
-            // Add pulsing animation after the element is rendered
-            setTimeout(() => {
-              const markerElement = marker.getElement();
-              if (markerElement) {
-                markerElement.classList.add('highlighted-marker');
-              }
-            }, 100);
-
-            console.log('✅ Found and highlighted target asset:', assetId, 'on location:', floor);
-          }
-        });
-
-        if (!foundTargetAsset && assetId) {
-          console.warn('❌ Target asset not found on location:', floor, 'Asset ID:', assetId);
-          showAddAssetButton();
-        }
-      });
+    function resetAllModes() {
+      addingMode = deleteMode = moveMode = false;
+      addMarkerBtn.classList.remove('active');
+      deleteMarkerBtn.classList.remove('active');
+      moveMarkerBtn.classList.remove('active');
+      categoryPanel.classList.remove('show');
+      filterPanel.classList.remove('show');
     }
 
-    function showAddAssetButton() {
-      document.getElementById('addAssetBtn').style.display = 'flex';
-    }
+    addMarkerBtn.addEventListener('click', () => {
+      if (addingMode) {
+        resetAllModes();
+      } else {
+        resetAllModes();
+        addingMode = true;
+        addMarkerBtn.classList.add('active');
+        categoryPanel.classList.add('show');
+      }
+    });
 
-    // Function to find asset across all floors
-    async function findFloorByAssetId(assetId) {
-      const floors = ["Bookstack 1 & 2", "Main Building", "Third Library Building", "Outstores", "Technology & Craftsman Block"];
-      
-      for (const floor of floors) {
-        try {
-          const snapshot = await db.ref(`bs2_markers/${floor}`).once('value');
-          const markers = snapshot.val();
-          if (!markers) continue;
+    deleteMarkerBtn.addEventListener('click', () => {
+      if (deleteMode) {
+        resetAllModes();
+      } else {
+        resetAllModes();
+        deleteMode = true;
+        deleteMarkerBtn.classList.add('active');
+      }
+    });
 
-          for (const key in markers) {
-            const marker = markers[key];
-            if (marker.note === assetId || marker.assetId === assetId || key === assetId) {
-              console.log('🎯 Found asset', assetId, 'on location:', floor);
-              return { floor, image: getImageFromFloor(floor) };
+    moveMarkerBtn.addEventListener('click', () => {
+      if (moveMode) {
+        resetAllModes();
+        for (const floor in allMarkers) {
+          allMarkers[floor].forEach(({ marker }) => {
+            if (marker.dragging) {
+              marker.dragging.disable();
+              marker.off('dragend');
             }
-          }
-        } catch (error) {
-          console.error('Error searching floor:', floor, error);
+          });
+        }
+      } else {
+        resetAllModes();
+        moveMode = true;
+        moveMarkerBtn.classList.add('active');
+        if (allMarkers[floorName]) {
+          allMarkers[floorName].forEach(({ marker, key }) => {
+            if (marker.dragging) {
+              marker.dragging.enable();
+              marker.on('dragend', (e) => {
+                const { lat, lng } = e.target.getLatLng();
+                db.ref(`bs2_markers/${floorName}/${key}`).update({ lat, lng });
+              });
+            }
+          });
         }
       }
-      return null;
+    });
+
+    filterBtn.addEventListener('click', () => {
+      filterPanel.classList.toggle('show');
+    });
+
+    closeCategoryPanel.addEventListener('click', () => {
+      categoryPanel.classList.remove('show');
+      if (addingMode) {
+        resetAllModes();
+      }
+    });
+
+    closeFilterPanel.addEventListener('click', () => {
+      filterPanel.classList.remove('show');
+    });
+
+    document.getElementById('zoomIn').addEventListener('click', () => {
+      map.zoomIn();
+    });
+
+    document.getElementById('zoomOut').addEventListener('click', () => {
+      map.zoomOut();
+    });
+
+    const floorSelector = document.getElementById('floorSelector');
+    floorSelector.addEventListener('change', e => {
+      const selected = e.target.value;
+      const label = e.target.options[e.target.selectedIndex].text;
+      loadFloor(selected, label);
+    });
+
+    const searchBox = document.getElementById('searchBox');
+    const searchBtn = document.getElementById('searchBtn');
+
+    function performSearch() {
+      const query = searchBox.value.toLowerCase().trim();
+      if (!query) return;
+      
+      const currentFloorMarkers = allMarkers[floorName] || [];
+      const matches = currentFloorMarkers.filter(({ note, category }) => 
+        note.toLowerCase().includes(query) || 
+        category.toLowerCase().includes(query)
+      );
+      
+      if (matches.length > 0) {
+        const firstMatch = matches[0];
+        map.setView(firstMatch.marker.getLatLng(), 1);
+        firstMatch.marker.openPopup();
+      } else {
+        alert('No markers found matching your search.');
+      }
     }
 
-    function getImageFromFloor(floorLabel) {
-      const mapping = {
-        "Bookstack 1 & 2": "Bookstack%201%20and%202.png",
-        "Main Building": "Main.png",
-        "Third Library Building": "TLB.png",
-        "Outstores": "Outstores.png",
-        "Technology & Craftsman Block": "tech%20and%20maintenance%20block.png"
-      };
-      return mapping[floorLabel] || "Bookstack%201%20and%202.png";
+    searchBtn.addEventListener('click', performSearch);
+    searchBox.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        performSearch();
+      }
+    });
+
+    const filterDropdown = document.getElementById('filterDropdown');
+    filterDropdown.addEventListener('change', (e) => {
+      const selectedCategory = e.target.value;
+      const currentFloorMarkers = allMarkers[floorName] || [];
+      
+      currentFloorMarkers.forEach(({ marker, category }) => {
+        if (selectedCategory === 'All' || category === selectedCategory) {
+          marker.setOpacity(1);
+        } else {
+          marker.setOpacity(0.3);
+        }
+      });
+    });
+
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
     }
 
-    // Building to floor mapping - updated to match new structure
-    const buildingToFloorMapping = {
-      // Bookstack 1 & 2 variations
+    const assetId = getQueryParam('assetId') || getQueryParam('Asset_ID') || getQueryParam('assetid');
+    const category = getQueryParam('category') || getQueryParam('Asset_Category') || getQueryParam('Asset_category');
+    let area = getQueryParam('area') || getQueryParam('location') || getQueryParam('Location') || getQueryParam('Building_Location') || getQueryParam('Building Location');
+
+    if (area) {
+      try {
+        area = decodeURIComponent(area);
+      } catch (e) {
+        console.log('Could not decode area parameter:', area);
+      }
+    }
+
+    console.log('URL Parameters:', {
+      assetId: assetId,
+      category: category,
+      area: area,
+      rawArea: getQueryParam('area'),
+      fullURL: window.location.href,
+      allParams: Object.fromEntries(new URLSearchParams(window.location.search))
+    });
+
+    const areaToFloorMapping = {
       "Bookstack 1 & 2": { label: "Bookstack 1 & 2", image: "Bookstack%201%20and%202.png" },
       "bookstack 1 & 2": { label: "Bookstack 1 & 2", image: "Bookstack%201%20and%202.png" },
       "Bookstack 1 and 2": { label: "Bookstack 1 & 2", image: "Bookstack%201%20and%202.png" },
@@ -535,7 +856,6 @@
       "Bookstack": { label: "Bookstack 1 & 2", image: "Bookstack%201%20and%202.png" },
       "bookstack": { label: "Bookstack 1 & 2", image: "Bookstack%201%20and%202.png" },
       
-      // Main Building variations
       "Main Building": { label: "Main Building", image: "Main.png" },
       "main building": { label: "Main Building", image: "Main.png" },
       "Main": { label: "Main Building", image: "Main.png" },
@@ -543,7 +863,6 @@
       "MB": { label: "Main Building", image: "Main.png" },
       "mb": { label: "Main Building", image: "Main.png" },
       
-      // Third Library Building variations
       "Third Library Building": { label: "Third Library Building", image: "TLB.png" },
       "third library building": { label: "Third Library Building", image: "TLB.png" },
       "TLB": { label: "Third Library Building", image: "TLB.png" },
@@ -553,13 +872,11 @@
       "Library": { label: "Third Library Building", image: "TLB.png" },
       "library": { label: "Third Library Building", image: "TLB.png" },
       
-      // Outstores variations
       "Outstores": { label: "Outstores", image: "Outstores.png" },
       "outstores": { label: "Outstores", image: "Outstores.png" },
       "OS": { label: "Outstores", image: "Outstores.png" },
       "os": { label: "Outstores", image: "Outstores.png" },
       
-      // Technology & Craftsman Block variations (combined)
       "Technology & Craftsman Block": { label: "Technology & Craftsman Block", image: "tech%20and%20maintenance%20block.png" },
       "technology & craftsman block": { label: "Technology & Craftsman Block", image: "tech%20and%20maintenance%20block.png" },
       "Technology Block": { label: "Technology & Craftsman Block", image: "tech%20and%20maintenance%20block.png" },
@@ -582,47 +899,27 @@
       "tech and maintenance block": { label: "Technology & Craftsman Block", image: "tech%20and%20maintenance%20block.png" }
     };
 
-    // Initialize the map
-    async function initializeMap() {
-      let targetFloor = { label: "Bookstack 1 & 2", image: "Bookstack%201%20and%202.png" }; // Default
-
-      if (assetId) {
-        console.log('🔍 Searching for asset:', assetId);
-        // Search for the asset across all floors
-        const result = await findFloorByAssetId(assetId);
-        if (result) {
-          targetFloor = { label: result.floor, image: result.image };
-          console.log('✅ Asset found, loading floor:', targetFloor);
-        } else {
-          console.warn('❌ Asset not found, using default floor');
-        }
-      } else if (building && buildingToFloorMapping[building]) {
-        targetFloor = buildingToFloorMapping[building];
-        console.log('🏢 Using building parameter:', building, '→', targetFloor);
-      }
-
-      // Load the floor
-      loadFloor(targetFloor.image, targetFloor.label);
+    let initialFloor = { label: "Bookstack 1 & 2", image: "Bookstack%201%20and%202.png" };
+    
+    if (area && areaToFloorMapping[area]) {
+      initialFloor = areaToFloorMapping[area];
+      console.log('Floor selected based on area:', area, '→', initialFloor);
+    } else if (area) {
+      console.warn('Unknown area parameter:', area);
+      console.log('Available options:', Object.keys(areaToFloorMapping));
+      console.log('Using default floor');
+    } else {
+      console.log('No area parameter found, using default floor');
     }
 
-    // Add marker functionality - exactly like index.html
-    const addAssetBtn = document.getElementById('addAssetBtn');
-    const categoryPanel = document.getElementById('categoryPanel');
-    const closeCategoryPanel = document.getElementById('closeCategoryPanel');
+    floorSelector.value = initialFloor.image;
+    loadFloor(initialFloor.image, initialFloor.label);
 
-    addAssetBtn.addEventListener('click', () => {
-      if (addingMode) {
-        addingMode = false;
-        addAssetBtn.classList.remove('active');
-        categoryPanel.classList.remove('show');
-      } else {
-        addingMode = true;
-        addAssetBtn.classList.add('active');
-        categoryPanel.classList.add('show');
-        
-        // Pre-select category if provided
-        if (category) {
-          const categorySelector = document.getElementById('manualCategorySelector');
+    if (assetId || category) {
+      console.log('Asset info available:', { assetId, category });
+      if (category) {
+        const categorySelector = document.getElementById('manualCategorySelector');
+        if (categorySelector) {
           const categoryMap = {
             "Roof Drain": "Roof Drain",
             "roof drain": "Roof Drain",
@@ -638,19 +935,11 @@
           
           const mappedCategory = categoryMap[category] || category;
           categorySelector.value = mappedCategory;
+          console.log('Category pre-selected:', category, '→', mappedCategory);
         }
       }
-    });
+    }
 
-    closeCategoryPanel.addEventListener('click', () => {
-      categoryPanel.classList.remove('show');
-      if (addingMode) {
-        addingMode = false;
-        addAssetBtn.classList.remove('active');
-      }
-    });
-
-    // Map click handler - exactly like index.html
     map.on('click', e => {
       if (!addingMode) return;
       
@@ -675,31 +964,12 @@
         category: userCategory
       };
       
-      db.ref(`bs2_markers/${currentFloor}`).push(newMarker);
+      db.ref(`bs2_markers/${floorName}`).push(newMarker);
       
       categoryPanel.classList.remove('show');
-      addingMode = false;
-      addAssetBtn.classList.remove('active');
-      
-      // Hide the add button after successful add
-      document.getElementById('addAssetBtn').style.display = 'none';
-      
-      // Reload markers to show the new one
-      setTimeout(() => {
-        loadMarkersForFloor(currentFloor);
-      }, 500);
+      resetAllModes();
     });
 
-    // Zoom controls
-    document.getElementById('zoomIn').addEventListener('click', () => {
-      map.zoomIn();
-    });
-
-    document.getElementById('zoomOut').addEventListener('click', () => {
-      map.zoomOut();
-    });
-
-    // Handle resize
     window.addEventListener('resize', () => {
       setTimeout(() => {
         map.invalidateSize();
@@ -711,9 +981,6 @@
         map.invalidateSize();
       }, 200);
     });
-
-    // Start the application
-    initializeMap();
   </script>
 </body>
 </html>
