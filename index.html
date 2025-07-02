@@ -656,7 +656,17 @@
         if (typeof data.lat !== "number" || typeof data.lng !== "number" || typeof data.note !== "string") return;
         const icon = getCategoryIcon(data.category);
         const marker = L.marker([data.lat, data.lng], { icon }).addTo(map);
-        marker.bindPopup(data.note);
+        
+        // Create proper popup content
+        const popupContent = `
+          <div>
+            <strong>Asset ID: ${data.assetId || data.note}</strong><br>
+            <em>Category: ${data.category}</em><br>
+            <em>Location: ${floor}</em>
+          </div>
+        `;
+        marker.bindPopup(popupContent);
+        
         allMarkers[floor].push({ key, marker, note: data.note, category: data.category });
         
         // Hide existing markers when adding from Glide, but keep newly added ones visible
