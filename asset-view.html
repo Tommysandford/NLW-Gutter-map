@@ -48,145 +48,34 @@
       color: #333;
     }
 
-    /* Asset not found notification */
-    #assetNotFoundPanel {
+    /* Add Asset Button */
+    #addAssetBtn {
       position: fixed;
       top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 1001;
-      background: #fff3cd;
-      border: 1px solid #ffeaa7;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-      padding: 20px;
-      max-width: 400px;
-      width: 90%;
-      text-align: center;
-      display: none;
-    }
-
-    #assetNotFoundPanel h3 {
-      margin: 0 0 12px 0;
-      color: #856404;
-      font-size: 16px;
-    }
-
-    #assetNotFoundPanel p {
-      margin: 0 0 16px 0;
-      color: #856404;
-      font-size: 14px;
-      line-height: 1.4;
-    }
-
-    #addAssetBtn {
+      right: 12px;
+      z-index: 1000;
+      width: 48px;
+      height: 48px;
+      border: none;
+      border-radius: 50%;
       background: #28a745;
       color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 12px 24px;
-      font-size: 14px;
-      font-weight: 500;
       cursor: pointer;
-      transition: background 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
     #addAssetBtn:hover {
       background: #218838;
+      transform: scale(1.05);
     }
 
-    /* Add Asset Panel */
-    #addAssetPanel {
-      position: fixed;
-      bottom: -400px;
-      left: 0;
-      right: 0;
-      z-index: 1002;
-      background: white;
-      border-radius: 20px 20px 0 0;
-      box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
-      transition: bottom 0.3s ease;
-      padding: 20px;
-      max-height: 60vh;
-      overflow-y: auto;
-    }
-
-    #addAssetPanel.show {
-      bottom: 0;
-    }
-
-    #addAssetPanel h3 {
-      margin: 0 0 20px 0;
-      font-size: 18px;
-      font-weight: 600;
-      text-align: center;
-      color: #333;
-    }
-
-    .form-group {
-      margin-bottom: 16px;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 6px;
-      font-size: 14px;
-      font-weight: 500;
-      color: #333;
-    }
-
-    .form-group input, .form-group select {
-      width: 100%;
-      padding: 12px 16px;
-      border: 2px solid #e9ecef;
-      border-radius: 8px;
-      font-size: 14px;
-      background: white;
-    }
-
-    .form-group input:focus, .form-group select:focus {
-      border-color: #007bff;
-      outline: none;
-    }
-
-    .form-group input[readonly] {
-      background: #f8f9fa;
-      color: #6c757d;
-    }
-
-    .button-group {
-      display: flex;
-      gap: 12px;
-      margin-top: 20px;
-    }
-
-    .btn {
-      flex: 1;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .btn-primary {
-      background: #007bff;
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background: #0056b3;
-    }
-
-    .btn-secondary {
-      background: #6c757d;
-      color: white;
-    }
-
-    .btn-secondary:hover {
-      background: #545b62;
+    #addAssetBtn.active {
+      background: #dc3545;
     }
 
     /* Zoom controls */
@@ -225,6 +114,43 @@
 
     .zoom-btn + .zoom-btn {
       border-top: 1px solid #eee;
+    }
+
+    /* Category Panel */
+    #categoryPanel {
+      position: fixed;
+      bottom: -300px;
+      left: 0;
+      right: 0;
+      z-index: 1001;
+      background: white;
+      border-radius: 20px 20px 0 0;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+      transition: bottom 0.3s ease;
+      padding: 20px;
+      max-height: 50vh;
+      overflow-y: auto;
+    }
+
+    #categoryPanel.show {
+      bottom: 0;
+    }
+
+    #categoryPanel h3 {
+      margin: 0 0 16px 0;
+      font-size: 18px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    #manualCategorySelector {
+      width: 100%;
+      padding: 16px;
+      border: 2px solid #e9ecef;
+      border-radius: 12px;
+      font-size: 16px;
+      background: white;
+      margin-bottom: 16px;
     }
 
     .close-btn {
@@ -266,6 +192,14 @@
         font-size: 13px;
       }
 
+      #addAssetBtn {
+        top: 16px;
+        right: 8px;
+        width: 44px;
+        height: 44px;
+        font-size: 18px;
+      }
+
       #zoomControls {
         right: 8px;
       }
@@ -274,15 +208,6 @@
         width: 44px;
         height: 44px;
         font-size: 18px;
-      }
-
-      #assetNotFoundPanel {
-        padding: 16px;
-        width: 95%;
-      }
-
-      #addAssetPanel {
-        padding: 16px;
       }
     }
 
@@ -309,15 +234,6 @@
       animation: pulse 2s infinite;
       z-index: 1000 !important;
     }
-
-    /* Add marker mode cursor */
-    .add-marker-mode {
-      cursor: crosshair !important;
-    }
-
-    .add-marker-mode * {
-      cursor: crosshair !important;
-    }
   </style>
 </head>
 <body>
@@ -330,59 +246,27 @@
       Location: <span id="currentLocation">Loading...</span>
     </div>
 
-    <!-- Asset not found notification -->
-    <div id="assetNotFoundPanel">
-      <h3>Asset Not Found</h3>
-      <p>The asset "<strong id="missingAssetId"></strong>" was not found on this location. Would you like to add it?</p>
-      <button id="addAssetBtn">Add Missing Asset</button>
-    </div>
-
-    <!-- Add Asset Panel -->
-    <div id="addAssetPanel">
-      <button class="close-btn" id="closeAddAssetPanel">×</button>
-      <h3>Add Missing Asset</h3>
-      
-      <div class="form-group">
-        <label for="assetIdInput">Asset ID</label>
-        <input type="text" id="assetIdInput" readonly>
-      </div>
-      
-      <div class="form-group">
-        <label for="locationInput">Location</label>
-        <input type="text" id="locationInput" readonly>
-      </div>
-      
-      <div class="form-group">
-        <label for="categoryInput">Category</label>
-        <select id="categoryInput">
-          <option value="">-- Select Category --</option>
-          <option value="Gutter">Gutter</option>
-          <option value="Down Pipe">Down Pipe</option>
-          <option value="Roof Drain">Roof Drain</option>
-          <option value="Manhole">Manhole</option>
-          <option value="Ground Level Channel">Ground Level Channel</option>
-        </select>
-      </div>
-      
-      <div class="form-group">
-        <label for="notesInput">Additional Notes (Optional)</label>
-        <input type="text" id="notesInput" placeholder="Enter any additional notes...">
-      </div>
-      
-      <p style="font-size: 14px; color: #6c757d; margin: 16px 0; text-align: center;">
-        Click on the map to place the asset marker
-      </p>
-      
-      <div class="button-group">
-        <button class="btn btn-secondary" id="cancelAddAsset">Cancel</button>
-        <button class="btn btn-primary" id="confirmAddAsset" disabled>Add Asset</button>
-      </div>
-    </div>
+    <!-- Add Asset Button - only show if asset not found -->
+    <button id="addAssetBtn" title="Add Missing Asset" style="display: none;">+</button>
     
     <!-- Zoom controls -->
     <div id="zoomControls">
       <button class="zoom-btn" id="zoomIn">+</button>
       <button class="zoom-btn" id="zoomOut">−</button>
+    </div>
+
+    <!-- Category Panel -->
+    <div id="categoryPanel">
+      <button class="close-btn" id="closeCategoryPanel">×</button>
+      <h3>Select Category</h3>
+      <select id="manualCategorySelector">
+        <option value="">-- Select Category --</option>
+        <option value="Gutter">Gutter</option>
+        <option value="Down Pipe">Down Pipe</option>
+        <option value="Roof Drain">Roof Drain</option>
+        <option value="Manhole">Manhole</option>
+        <option value="Ground Level Channel">Ground Level Channel</option>
+      </select>
     </div>
   </div>
 
@@ -424,8 +308,7 @@
     let targetAsset = null;
     let highlightedMarker = null;
     let currentFloor = null;
-    let addingAssetMode = false;
-    let pendingAssetLocation = null;
+    let addingMode = false;
 
     // Updated floor bounds for all buildings
     const floorBounds = {
@@ -520,7 +403,7 @@
         if (!markers) {
           console.log('No markers found for floor:', floor);
           if (assetId) {
-            showAssetNotFound();
+            showAddAssetButton();
           }
           return;
         }
@@ -596,18 +479,13 @@
 
         if (!foundTargetAsset && assetId) {
           console.warn('❌ Target asset not found on location:', floor, 'Asset ID:', assetId);
-          showAssetNotFound();
+          showAddAssetButton();
         }
       });
     }
 
-    function showAssetNotFound() {
-      document.getElementById('missingAssetId').textContent = assetId;
-      document.getElementById('assetNotFoundPanel').style.display = 'block';
-    }
-
-    function hideAssetNotFound() {
-      document.getElementById('assetNotFoundPanel').style.display = 'none';
+    function showAddAssetButton() {
+      document.getElementById('addAssetBtn').style.display = 'flex';
     }
 
     // Function to find asset across all floors
@@ -727,170 +605,89 @@
       loadFloor(targetFloor.image, targetFloor.label);
     }
 
-    // Add Asset Functionality
-    function initializeAddAssetForm() {
-      document.getElementById('assetIdInput').value = assetId || '';
-      document.getElementById('locationInput').value = currentFloor || '';
-      
-      // Pre-select category if provided
-      if (category) {
-        const categorySelector = document.getElementById('categoryInput');
-        const categoryMap = {
-          "Roof Drain": "Roof Drain",
-          "roof drain": "Roof Drain",
-          "Gutter": "Gutter", 
-          "gutter": "Gutter",
-          "Down Pipe": "Down Pipe",
-          "down pipe": "Down Pipe",
-          "Ground Level Channel": "Ground Level Channel",
-          "ground level channel": "Ground Level Channel",
-          "Manhole": "Manhole",
-          "manhole": "Manhole"
-        };
+    // Add marker functionality - exactly like index.html
+    const addAssetBtn = document.getElementById('addAssetBtn');
+    const categoryPanel = document.getElementById('categoryPanel');
+    const closeCategoryPanel = document.getElementById('closeCategoryPanel');
+
+    addAssetBtn.addEventListener('click', () => {
+      if (addingMode) {
+        addingMode = false;
+        addAssetBtn.classList.remove('active');
+        categoryPanel.classList.remove('show');
+      } else {
+        addingMode = true;
+        addAssetBtn.classList.add('active');
+        categoryPanel.classList.add('show');
         
-        const mappedCategory = categoryMap[category] || category;
-        categorySelector.value = mappedCategory;
-      }
-    }
-
-    function showAddAssetPanel() {
-      hideAssetNotFound();
-      initializeAddAssetForm();
-      document.getElementById('addAssetPanel').classList.add('show');
-      addingAssetMode = true;
-      document.body.classList.add('add-marker-mode');
-      pendingAssetLocation = null;
-      document.getElementById('confirmAddAsset').disabled = true;
-    }
-
-    function hideAddAssetPanel() {
-      document.getElementById('addAssetPanel').classList.remove('show');
-      addingAssetMode = false;
-      document.body.classList.remove('add-marker-mode');
-      pendingAssetLocation = null;
-    }
-
-    function saveNewAsset() {
-      if (!pendingAssetLocation) {
-        alert('Please click on the map to select a location for the asset.');
-        return;
-      }
-
-      const assetIdValue = document.getElementById('assetIdInput').value.trim();
-      const categoryValue = document.getElementById('categoryInput').value;
-      const notesValue = document.getElementById('notesInput').value.trim();
-
-      if (!assetIdValue) {
-        alert('Asset ID is required.');
-        return;
-      }
-
-      if (!categoryValue) {
-        alert('Please select a category.');
-        return;
-      }
-
-      // Create the note field - combining asset ID with any additional notes
-      let noteText = assetIdValue;
-      if (notesValue) {
-        noteText += ` - ${notesValue}`;
-      }
-
-      const newAsset = {
-        lat: pendingAssetLocation.lat,
-        lng: pendingAssetLocation.lng,
-        note: noteText,
-        assetId: assetIdValue,
-        category: categoryValue,
-        addedDate: new Date().toISOString()
-      };
-
-      console.log('Saving new asset:', newAsset);
-
-      // Save to Firebase
-      db.ref(`bs2_markers/${currentFloor}`).push(newAsset)
-        .then(() => {
-          console.log('✅ Asset saved successfully');
-          alert('Asset added successfully!');
-          hideAddAssetPanel();
+        // Pre-select category if provided
+        if (category) {
+          const categorySelector = document.getElementById('manualCategorySelector');
+          const categoryMap = {
+            "Roof Drain": "Roof Drain",
+            "roof drain": "Roof Drain",
+            "Gutter": "Gutter", 
+            "gutter": "Gutter",
+            "Down Pipe": "Down Pipe",
+            "down pipe": "Down Pipe",
+            "Ground Level Channel": "Ground Level Channel",
+            "ground level channel": "Ground Level Channel",
+            "Manhole": "Manhole",
+            "manhole": "Manhole"
+          };
           
-          // Reload the markers to show the new asset
-          setTimeout(() => {
-            loadMarkersForFloor(currentFloor);
-          }, 500);
-        })
-        .catch((error) => {
-          console.error('❌ Error saving asset:', error);
-          alert('Error saving asset. Please try again.');
-        });
-    }
-
-    // Event Listeners
-    document.getElementById('addAssetBtn').addEventListener('click', showAddAssetPanel);
-    document.getElementById('closeAddAssetPanel').addEventListener('click', hideAddAssetPanel);
-    document.getElementById('cancelAddAsset').addEventListener('click', hideAddAssetPanel);
-    document.getElementById('confirmAddAsset').addEventListener('click', saveNewAsset);
-
-    // Category selection validation
-    document.getElementById('categoryInput').addEventListener('change', (e) => {
-      updateConfirmButton();
-    });
-
-    function updateConfirmButton() {
-      const categorySelected = document.getElementById('categoryInput').value;
-      const locationSelected = pendingAssetLocation !== null;
-      
-      document.getElementById('confirmAddAsset').disabled = !(categorySelected && locationSelected);
-    }
-
-    // Map click handler for adding assets
-    map.on('click', (e) => {
-      if (!addingAssetMode) return;
-      
-      // Remove any existing temporary marker
-      map.eachLayer(layer => {
-        if (layer.options && layer.options.isTemporary) {
-          map.removeLayer(layer);
+          const mappedCategory = categoryMap[category] || category;
+          categorySelector.value = mappedCategory;
         }
-      });
-
-      // Add temporary marker
-      const tempIcon = getCategoryIcon(document.getElementById('categoryInput').value || 'default');
-      const tempMarker = L.marker([e.latlng.lat, e.latlng.lng], { 
-        icon: tempIcon,
-        isTemporary: true,
-        zIndexOffset: 500
-      }).addTo(map);
-
-      tempMarker.bindPopup('Proposed location for new asset').openPopup();
-
-      // Store the location
-      pendingAssetLocation = e.latlng;
-      updateConfirmButton();
-
-      console.log('Selected location:', e.latlng);
+      }
     });
 
-    // Update temporary marker when category changes
-    document.getElementById('categoryInput').addEventListener('change', (e) => {
-      if (pendingAssetLocation) {
-        // Remove existing temporary marker
-        map.eachLayer(layer => {
-          if (layer.options && layer.options.isTemporary) {
-            map.removeLayer(layer);
-          }
-        });
-
-        // Add new temporary marker with correct icon
-        const tempIcon = getCategoryIcon(e.target.value || 'default');
-        const tempMarker = L.marker([pendingAssetLocation.lat, pendingAssetLocation.lng], { 
-          icon: tempIcon,
-          isTemporary: true,
-          zIndexOffset: 500
-        }).addTo(map);
-
-        tempMarker.bindPopup('Proposed location for new asset').openPopup();
+    closeCategoryPanel.addEventListener('click', () => {
+      categoryPanel.classList.remove('show');
+      if (addingMode) {
+        addingMode = false;
+        addAssetBtn.classList.remove('active');
       }
+    });
+
+    // Map click handler - exactly like index.html
+    map.on('click', e => {
+      if (!addingMode) return;
+      
+      let userCategory = category;
+      if (!userCategory) {
+        const dropdown = document.getElementById("manualCategorySelector");
+        userCategory = dropdown ? dropdown.value : "";
+        if (!userCategory || !iconMap[userCategory]) {
+          alert("Please select a valid category before placing a marker.");
+          return;
+        }
+      }
+      
+      let note = assetId ? `${assetId}` : prompt("Enter marker note:") || "";
+      if (!note.trim()) return;
+      
+      const newMarker = {
+        lat: e.latlng.lat,
+        lng: e.latlng.lng,
+        note: note.trim(),
+        assetId: assetId || null,
+        category: userCategory
+      };
+      
+      db.ref(`bs2_markers/${currentFloor}`).push(newMarker);
+      
+      categoryPanel.classList.remove('show');
+      addingMode = false;
+      addAssetBtn.classList.remove('active');
+      
+      // Hide the add button after successful add
+      document.getElementById('addAssetBtn').style.display = 'none';
+      
+      // Reload markers to show the new one
+      setTimeout(() => {
+        loadMarkersForFloor(currentFloor);
+      }, 500);
     });
 
     // Zoom controls
@@ -917,3 +714,6 @@
 
     // Start the application
     initializeMap();
+  </script>
+</body>
+</html>
